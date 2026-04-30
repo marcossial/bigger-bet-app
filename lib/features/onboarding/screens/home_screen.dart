@@ -35,7 +35,7 @@ class BiggerBetHome extends StatelessWidget {
               bottom: 0,
               left: 0,
               right: 0,
-              child: _buildBottomNavBar(),
+              child: _buildBottomNavBar(context),
             ),
           ],
         ),
@@ -448,64 +448,103 @@ class BiggerBetHome extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNavBar() {
+  Widget _buildBottomNavBar(context) {
     return Container(
-      height: 90,
-      padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20, top: 15),
-      decoration: BoxDecoration(
-          color: AppColors.bottomNavBackground,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-          border: Border(
-            top: BorderSide(
-                color: AppColors.neonGreen.withOpacity(0.2), width: 1),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.neonGreen.withOpacity(0.05),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            )
-          ]),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            decoration: BoxDecoration(
-                color: AppColors.neonGreen,
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.neonGreen.withOpacity(0.4),
-                    blurRadius: 15,
-                    spreadRadius: 2,
-                  )
-                ]),
-            child: const Row(
-              children: [
-                Icon(Icons.home, color: Colors.black, size: 20),
-                SizedBox(width: 8),
-                Text(
-                  'Início',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                )
-              ],
+        height: 90,
+        padding:
+            const EdgeInsets.only(bottom: 20, left: 20, right: 20, top: 15),
+        decoration: BoxDecoration(
+            color: AppColors.bottomNavBackground,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
             ),
-          ),
-          const Icon(Icons.sports_esports_outlined,
-              color: AppColors.textGrey, size: 26),
-          const Icon(Icons.chat_bubble_outline,
-              color: AppColors.textGrey, size: 24),
-          const Icon(Icons.face, color: AppColors.textGrey, size: 26),
-        ],
-      ),
-    );
+            border: Border(
+              top: BorderSide(
+                  color: AppColors.neonGreen.withOpacity(0.2), width: 1),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.neonGreen.withOpacity(0.05),
+                blurRadius: 20,
+                offset: const Offset(0, -5),
+              )
+            ]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            // HOME (já está selecionado)
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/home');
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.neonGreen,
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.neonGreen.withOpacity(0.4),
+                      blurRadius: 15,
+                      spreadRadius: 2,
+                    )
+                  ],
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.home, color: Colors.black, size: 20),
+                    SizedBox(width: 8),
+                    Text(
+                      'Início',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+
+            // GAMES
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/games');
+              },
+              child: const Icon(
+                Icons.sports_esports_outlined,
+                color: AppColors.textGrey,
+                size: 26,
+              ),
+            ),
+
+            // INFO
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/info');
+              },
+              child: const Icon(
+                Icons.chat_bubble_outline,
+                color: AppColors.textGrey,
+                size: 24,
+              ),
+            ),
+
+            // PERFIL
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacementNamed(context, '/perfil');
+              },
+              child: const Icon(
+                Icons.face,
+                color: AppColors.textGrey,
+                size: 26,
+              ),
+            ),
+          ],
+        ));
   }
 }
