@@ -6,11 +6,14 @@ class AppColors {
   static const Color cardBackground = Color(0xFF1A1A2E);
   static const Color cardBlueDark = Color(0xFF0F1524);
   static const Color cardGreenDark = Color(0xFF101B14);
+  static const Color darkCard = Color(0xFF0F0F0F);
   static const Color bottomNavBackground = Color(0xFF0D1015);
 
   // Brand
   static const Color neonGreen = Color(0xFF39FF14);
   static const Color neonGreenDark = Color(0xFF2BCB10);
+  static const Color neonPink = Color(0xFFFF2D55);
+  static const Color neonBlue = Color(0xFF4A6CF7);
 
   // Borders
   static const Color cardBorder = Color(0xFF2A2D35);

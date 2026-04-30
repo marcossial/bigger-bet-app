@@ -35,7 +35,7 @@ class AlienAvatarCard extends StatelessWidget {
         child: Container(
           color: const Color(0xFF151825),
           child: Image.asset(
-            'assets/images/alien_avatar.png',
+            'images/alien_avatar.png',
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => const _AlienFallback(),
           ),
