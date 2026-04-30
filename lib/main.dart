@@ -1,3 +1,6 @@
+import 'package:bigger_bet/features/onboarding/screens/login_screen.dart';
+import 'package:bigger_bet/features/onboarding/screens/register_screen.dart'
+    show RegisterScreen;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/theme/app_theme.dart';
@@ -29,20 +32,14 @@ class BiggerBetApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bigger Bet',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      home: OnboardingScreen(
-        onFinished: () {
-          // TODO: Navigate to Login/Register screen
-          debugPrint('Onboarding finished → navigate to login');
-        },
-        // onFinished: () {
-        //   Navigator.of(context).pushReplacement(
-        //   MaterialPageRoute(builder: (_) => const LoginScreen()),
-        //   );
-        // },
-      ),
-    );
+        title: 'Bigger Bet',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.darkTheme,
+        initialRoute: '/onboarding',
+        routes: {
+          '/onboarding': (_) => const OnboardingScreen(),
+          '/login': (_) => const LoginScreen(),
+          '/register': (_) => const RegisterScreen(),
+        });
   }
 }

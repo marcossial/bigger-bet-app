@@ -6,10 +6,7 @@ import '../widgets/page_indicator.dart';
 import '../../../core/theme/app_theme.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  /// Called when the user finishes the onboarding (taps Continue on last page).
-  final VoidCallback? onFinished;
-
-  const OnboardingScreen({super.key, this.onFinished});
+  const OnboardingScreen({super.key});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -26,7 +23,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      widget.onFinished?.call();
+      Navigator.pushReplacementNamed(context, '/login');
     }
   }
 
