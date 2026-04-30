@@ -1,3 +1,4 @@
+import 'package:bigger_bet/features/onboarding/screens/games_screen.dart';
 import 'package:bigger_bet/features/onboarding/screens/home_screen.dart';
 import 'package:bigger_bet/features/onboarding/screens/login_screen.dart';
 import 'package:bigger_bet/features/onboarding/screens/register_screen.dart'
@@ -42,6 +43,9 @@ class BiggerBetApp extends StatelessWidget {
           '/login': (_) => const LoginScreen(),
           '/register': (_) => const RegisterScreen(),
           '/home': (_) => const BiggerBetHome(),
+          '/games': (_) => const GamesScreen(),
+          // '/info': (_) => const InfoScreen(),
+          // '/perfil': (_) => const PerfilScreen(),
         });
   }
 }
