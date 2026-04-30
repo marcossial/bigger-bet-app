@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await Future.delayed(const Duration(seconds: 2)); // simulate request
     setState(() => _isLoading = false);
 
-    widget.onLoginSuccess?.call();
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   void _showSnack(String msg) {
