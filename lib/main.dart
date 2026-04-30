@@ -37,6 +37,11 @@ class BiggerBetApp extends StatelessWidget {
           // TODO: Navigate to Login/Register screen
           debugPrint('Onboarding finished → navigate to login');
         },
+        // onFinished: () {
+        //   Navigator.of(context).pushReplacement(
+        //   MaterialPageRoute(builder: (_) => const LoginScreen()),
+        //   );
+        // },
       ),
     );
   }
