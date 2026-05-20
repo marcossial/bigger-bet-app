@@ -42,12 +42,12 @@ class GamesScreen extends StatelessWidget {
   // ───────────────── HEADER ─────────────────
   Widget _buildHeader() {
     return const Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
         children: [
-          const Icon(Icons.adb, color: AppColors.neonGreen, size: 28),
-          const SizedBox(width: 10),
-          const Text(
+          Icon(Icons.adb, color: AppColors.neonGreen, size: 28),
+          SizedBox(width: 10),
+          Text(
             'BIGGER BET',
             style: TextStyle(
               color: AppColors.textWhite,
@@ -55,8 +55,8 @@ class GamesScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Spacer(),
-          const Icon(Icons.face, color: AppColors.textGrey),
+          Spacer(),
+          Icon(Icons.face, color: AppColors.textGrey),
         ],
       ),
     );
@@ -245,9 +245,9 @@ class GamesScreen extends StatelessWidget {
     return Container(
       height: 90,
       padding: const EdgeInsets.only(bottom: 20, top: 15),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.bottomNavBackground,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
