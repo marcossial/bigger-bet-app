@@ -4,6 +4,7 @@ import 'package:bigger_bet/features/onboarding/screens/info_screen.dart';
 import 'package:bigger_bet/features/onboarding/screens/login_screen.dart';
 import 'package:bigger_bet/features/onboarding/screens/register_screen.dart'
     show RegisterScreen;
+import 'package:bigger_bet/features/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/theme/app_theme.dart';
@@ -38,8 +39,9 @@ class BiggerBetApp extends StatelessWidget {
         title: 'Bigger Bet',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.darkTheme,
-        initialRoute: '/onboarding',
+        initialRoute: '/splash',
         routes: {
+          '/splash': (_) => const SplashScreen(),
           '/onboarding': (_) => const OnboardingScreen(),
           '/login': (_) => const LoginScreen(),
           '/register': (_) => const RegisterScreen(),
