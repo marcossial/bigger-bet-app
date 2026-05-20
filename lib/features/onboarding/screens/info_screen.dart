@@ -1,6 +1,5 @@
 import 'package:bigger_bet/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import '../../../core/theme/auth_colors.dart';
 
 class InfoScreen extends StatelessWidget {
   const InfoScreen({super.key});
