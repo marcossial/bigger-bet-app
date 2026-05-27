@@ -42,7 +42,7 @@ class AlienAvatarCard extends StatelessWidget {
               child: Transform.scale(
                 scale: 1.15,
                 child: Image.asset(
-                  'images/alien_avatar.png',
+                  'assets/images/alien_avatar.png',
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => const _AlienFallback(),
                 ),

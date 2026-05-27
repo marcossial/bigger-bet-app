@@ -21,7 +21,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  final _cpfController = TextEditingController();
   bool _termsAccepted = false;
   bool _isLoading = false;
 
@@ -32,8 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     if (_nameController.text.isEmpty ||
         _emailController.text.isEmpty ||
-        _passwordController.text.isEmpty ||
-        _cpfController.text.isEmpty) {
+        _passwordController.text.isEmpty) {
       _showSnack('Preencha todos os campos.');
       return;
     }
@@ -65,7 +63,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
-    _cpfController.dispose();
     super.dispose();
   }
 
@@ -96,7 +93,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               // ── Badge ─────────────────────────────────────────────────────
               const WelcomeBadge(text: 'CRIE SUA CONTA'),
-              const SizedBox(height: 36),
+              const SizedBox(height: 16),
+              Text(
+                'CADASTRAR',
+                style: TextStyle(
+                  fontSize: 44,
+                  fontWeight: FontWeight.w900,
+                  color: AuthColors.neonGreen,
+                  shadows: [
+                    Shadow(
+                      color: AuthColors.neonGreen.withOpacity(0.8),
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
 
               // ── Nome ──────────────────────────────────────────────────────
               AuthTextField(
@@ -115,20 +127,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 icon: Icons.email_outlined,
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 20),
-
-              // ── CPF ───────────────────────────────────────────────────────
-              AuthTextField(
-                label: 'CPF',
-                placeholder: '000.000.000-00',
-                icon: Icons.fingerprint,
-                controller: _cpfController,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  _CpfInputFormatter(),
-                ],
               ),
               const SizedBox(height: 20),
 
@@ -197,28 +195,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-// ─── CPF formatter: 000.000.000-00 ───────────────────────────────────────────
-class _CpfInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
-    final buffer = StringBuffer();
-
-    for (int i = 0; i < digits.length && i < 11; i++) {
-      if (i == 3 || i == 6) buffer.write('.');
-      if (i == 9) buffer.write('-');
-      buffer.write(digits[i]);
-    }
-
-    final text = buffer.toString();
-    return TextEditingValue(
-      text: text,
-      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }

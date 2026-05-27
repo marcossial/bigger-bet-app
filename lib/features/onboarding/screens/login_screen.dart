@@ -79,7 +79,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // ── Welcome badge ─────────────────────────────────────────────
               const WelcomeBadge(),
-              const SizedBox(height: 40),
+              const SizedBox(height: 16),
+              Text(
+                'ENTRAR',
+                style: TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.w900,
+                  color: AuthColors.neonGreen,
+                  shadows: [
+                    Shadow(
+                      color: AuthColors.neonGreen.withOpacity(0.8),
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
 
               // ── E-mail ────────────────────────────────────────────────────
               AuthTextField(

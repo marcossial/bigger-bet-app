@@ -49,6 +49,7 @@ class BiggerBetApp extends StatelessWidget {
           '/games': (_) => const GamesScreen(),
           '/info': (_) => const InfoScreen(),
           // '/perfil': (_) => const PerfilScreen(),
+          ...GamesScreen.routes,
         });
   }
 }
