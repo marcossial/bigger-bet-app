@@ -21,7 +21,7 @@ class ContinueButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF4A6CF7).withOpacity(0.5),
+              color: const Color(0xFF4A6CF7).withValues(alpha: 0.5),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),

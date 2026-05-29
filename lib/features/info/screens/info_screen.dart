@@ -13,16 +13,13 @@ class InfoScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader(),
-
+              const InfoHeader(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 32),
-
-                    // ── Hero Section ──────────────────────────────────────────
                     const Text(
                       'BASTIDORES',
                       style: TextStyle(
@@ -32,7 +29,7 @@ class InfoScreen extends StatelessWidget {
                         letterSpacing: 2,
                       ),
                     ),
-                    _buildStylizedTitle(),
+                    const StylizedTitle(),
                     const SizedBox(height: 16),
                     const Text(
                       'Não somos apenas mais um site sobre odds e jackpots; somos o seu guia para decifrar os mistérios por trás dos algoritmos sedutores e das propagandas exageradas desse conteúdo hipnotizante.',
@@ -43,8 +40,6 @@ class InfoScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 32),
-
-                    // ── Action Link ───────────────────────────────────────────
                     Center(
                       child: TextButton.icon(
                         onPressed: () {},
@@ -61,24 +56,25 @@ class InfoScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 40),
-
-                    // ── Mystery Card ──────────────────────────────────────────
-                    _buildMysteryCard(),
+                    const MysteryCard(),
                     const SizedBox(height: 40),
                   ],
                 ),
               ),
-
-              // ── Support Section ───────────────────────────────────────────
-              _buildSupportSection(),
+              const SupportSection(),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeader() {
+class InfoHeader extends StatelessWidget {
+  const InfoHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -91,7 +87,7 @@ class InfoScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border:
-                      Border.all(color: AppColors.neonGreen.withOpacity(0.5)),
+                      Border.all(color: AppColors.neonGreen.withValues(alpha: 0.5)),
                 ),
                 child:
                     const Icon(Icons.adb, color: AppColors.neonGreen, size: 24),
@@ -112,8 +108,13 @@ class InfoScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildStylizedTitle() {
+class StylizedTitle extends StatelessWidget {
+  const StylizedTitle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         Text(
@@ -124,7 +125,7 @@ class InfoScreen extends StatelessWidget {
             foreground: Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 1
-              ..color = AppColors.neonBlue.withOpacity(0.7),
+              ..color = AppColors.neonBlue.withValues(alpha: 0.7),
           ),
         ),
         const Text(
@@ -138,19 +139,24 @@ class InfoScreen extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildMysteryCard() {
+class MysteryCard extends StatelessWidget {
+  const MysteryCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(40),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.neonGreen.withOpacity(0.05),
+            AppColors.neonGreen.withValues(alpha: 0.05),
             Colors.transparent,
           ],
         ),
@@ -183,8 +189,6 @@ class InfoScreen extends StatelessWidget {
             style: TextStyle(color: AppColors.textGrey, height: 1.4),
           ),
           const SizedBox(height: 24),
-
-          // Quote section
           Row(
             children: [
               Container(width: 3, height: 40, color: AppColors.neonGreen),
@@ -202,26 +206,36 @@ class InfoScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 32),
-
-          // Sub-cards
-          Row(
+          const Row(
             children: [
-              _buildSmallCard(Icons.hub_outlined, 'SINCRONIA TOTAL'),
-              const SizedBox(width: 12),
-              _buildSmallCard(Icons.terminal, 'CORE NEURAL'),
+              SmallInfoCard(icon: Icons.hub_outlined, label: 'SINCRONIA TOTAL'),
+              SizedBox(width: 12),
+              SmallInfoCard(icon: Icons.terminal, label: 'CORE NEURAL'),
             ],
           )
         ],
       ),
     );
   }
+}
 
-  Widget _buildSmallCard(IconData icon, String label) {
+class SmallInfoCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const SmallInfoCard({
+    super.key,
+    required this.icon,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.3),
+          color: Colors.black.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -242,8 +256,13 @@ class InfoScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSupportSection() {
+class SupportSection extends StatelessWidget {
+  const SupportSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(32),
@@ -254,10 +273,10 @@ class InfoScreen extends StatelessWidget {
           topRight: Radius.circular(50),
         ),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'SUPORTE?',
             style: TextStyle(
               color: AppColors.neonPink,
@@ -265,27 +284,48 @@ class InfoScreen extends StatelessWidget {
               fontWeight: FontWeight.w900,
             ),
           ),
-          const SizedBox(height: 20),
-          const Text(
+          SizedBox(height: 20),
+          Text(
             'Nossos agentes extraterrestres estão prontos para ignorar suas solicitações em mais de 400 dialetos estelares. Comunicação? Um conceito primitivo.',
             style: TextStyle(color: AppColors.textSubtitle, height: 1.5),
           ),
-          const SizedBox(height: 32),
-          _buildSupportRow(
-              'LATÊNCIA DE RESPOSTA', '4.2 ÉONS', AppColors.neonPink),
-          const SizedBox(height: 12),
-          _buildSupportRow('PROTOCOLO', 'VOID', AppColors.textWhite),
-          const SizedBox(height: 16),
+          SizedBox(height: 32),
+          SupportRow(
+            label: 'LATÊNCIA DE RESPOSTA',
+            value: '4.2 ÉONS',
+            valueColor: AppColors.neonPink,
+          ),
+          SizedBox(height: 12),
+          SupportRow(
+            label: 'PROTOCOLO',
+            value: 'VOID',
+            valueColor: AppColors.textWhite,
+          ),
+          SizedBox(height: 16),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSupportRow(String label, String value, Color valueColor) {
+class SupportRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color valueColor;
+
+  const SupportRow({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

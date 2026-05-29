@@ -51,7 +51,8 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Money Abductor', style: TextStyle(color: AppColors.textWhite)),
+        title: const Text('Money Abductor',
+            style: TextStyle(color: AppColors.textWhite)),
         iconTheme: const IconThemeData(color: AppColors.neonGreen),
       ),
       body: Center(
@@ -66,22 +67,26 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
             Text(
               '${_multiplier.toStringAsFixed(2)}x',
               style: TextStyle(
-                fontSize: 80,
-                fontWeight: FontWeight.bold,
-                color: _crashed ? Colors.red : AppColors.neonGreen,
-                shadows: [
-                  Shadow(
-                    color: _crashed ? Colors.red.withOpacity(0.5) : AppColors.neonGreen.withOpacity(0.5),
-                    blurRadius: 20,
-                  )
-                ]
-              ),
+                  fontSize: 80,
+                  fontWeight: FontWeight.bold,
+                  color: _crashed ? Colors.red : AppColors.neonGreen,
+                  shadows: [
+                    Shadow(
+                      color: _crashed
+                          ? Colors.red.withValues(alpha: 0.5)
+                          : AppColors.neonGreen.withValues(alpha: 0.5),
+                      blurRadius: 20,
+                    )
+                  ]),
             ),
             if (_crashed) ...[
               const SizedBox(height: 20),
               const Text(
                 'ABDUZIDO!',
-                style: TextStyle(color: Colors.red, fontSize: 32, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold),
               ),
               const Text(
                 'O alienígena levou seu saldo.',
@@ -93,12 +98,17 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
               onPressed: _flying || _crashed ? null : _start,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.neonGreen,
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
               ),
               child: const Text(
                 'APOSTAR',
-                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
               ),
             ),
             if (_crashed)
@@ -111,7 +121,9 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
                       _crashed = false;
                     });
                   },
-                  child: const Text('Tentar de novo', style: TextStyle(color: AppColors.textGrey, fontSize: 16)),
+                  child: const Text('Tentar de novo',
+                      style:
+                          TextStyle(color: AppColors.textGrey, fontSize: 16)),
                 ),
               )
           ],

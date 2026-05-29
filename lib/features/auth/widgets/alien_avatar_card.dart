@@ -20,12 +20,12 @@ class AlienAvatarCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF39FF14).withOpacity(0.35),
+              color: const Color(0xFF39FF14).withValues(alpha: 0.35),
               blurRadius: 28,
               spreadRadius: 2,
             ),
             BoxShadow(
-              color: const Color(0xFF1E90FF).withOpacity(0.25),
+              color: const Color(0xFF1E90FF).withValues(alpha: 0.25),
               blurRadius: 28,
               spreadRadius: 2,
               offset: const Offset(4, 4),

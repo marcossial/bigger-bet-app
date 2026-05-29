@@ -1,8 +1,8 @@
-import 'package:bigger_bet/features/onboarding/screens/games_screen.dart';
-import 'package:bigger_bet/features/onboarding/screens/home_screen.dart';
-import 'package:bigger_bet/features/onboarding/screens/info_screen.dart';
-import 'package:bigger_bet/features/onboarding/screens/login_screen.dart';
-import 'package:bigger_bet/features/onboarding/screens/register_screen.dart'
+import 'package:bigger_bet/features/games/screens/games_screen.dart';
+import 'package:bigger_bet/features/home/screens/home_screen.dart';
+import 'package:bigger_bet/features/info/screens/info_screen.dart';
+import 'package:bigger_bet/features/auth/screens/login_screen.dart';
+import 'package:bigger_bet/features/auth/screens/register_screen.dart'
     show RegisterScreen;
 import 'package:bigger_bet/features/splash.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +13,11 @@ import 'features/onboarding/screens/onboarding_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Force portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Make status bar transparent to match the dark design
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,

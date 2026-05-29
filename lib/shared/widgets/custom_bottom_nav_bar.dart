@@ -20,12 +20,12 @@ class CustomBottomNavBar extends StatelessWidget {
           topRight: Radius.circular(30),
         ),
         border: Border(
-          top: BorderSide(
-              color: AppColors.neonGreen.withOpacity(0.2), width: 1),
+          top:
+              BorderSide(color: AppColors.neonGreen.withValues(alpha: 0.2), width: 1),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.neonGreen.withOpacity(0.05),
+            color: AppColors.neonGreen.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, -5),
           )
@@ -34,30 +34,30 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(
-            context,
+          _NavBarItemWidget(
             item: NavBarItem.home,
+            activeItem: activeItem,
             icon: Icons.home,
             label: 'Início',
             route: '/home',
           ),
-          _buildNavItem(
-            context,
+          _NavBarItemWidget(
             item: NavBarItem.games,
+            activeItem: activeItem,
             icon: Icons.sports_esports_outlined,
             label: 'Jogar',
             route: '/games',
           ),
-          _buildNavItem(
-            context,
+          _NavBarItemWidget(
             item: NavBarItem.info,
+            activeItem: activeItem,
             icon: Icons.chat_bubble_outline,
             label: 'Info',
             route: '/info',
           ),
-          _buildNavItem(
-            context,
+          _NavBarItemWidget(
             item: NavBarItem.profile,
+            activeItem: activeItem,
             icon: Icons.face,
             label: 'Perfil',
             route: '/perfil',
@@ -66,14 +66,25 @@ class CustomBottomNavBar extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildNavItem(
-    BuildContext context, {
-    required NavBarItem item,
-    required IconData icon,
-    required String label,
-    required String route,
-  }) {
+class _NavBarItemWidget extends StatelessWidget {
+  final NavBarItem item;
+  final NavBarItem activeItem;
+  final IconData icon;
+  final String label;
+  final String route;
+
+  const _NavBarItemWidget({
+    required this.item,
+    required this.activeItem,
+    required this.icon,
+    required this.label,
+    required this.route,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     final isActive = activeItem == item;
 
     return GestureDetector(
@@ -90,7 +101,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.neonGreen.withOpacity(0.4),
+                    color: AppColors.neonGreen.withValues(alpha: 0.4),
                     blurRadius: 15,
                     spreadRadius: 2,
                   )

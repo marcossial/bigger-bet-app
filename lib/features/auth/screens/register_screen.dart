@@ -5,30 +5,37 @@ import '../widgets/neon_action_button.dart';
 import '../widgets/terms_checkbox.dart';
 import '../widgets/welcome_badge.dart';
 import '../../../core/theme/auth_colors.dart';
-import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  final VoidCallback? onLoginSuccess;
+class RegisterScreen extends StatefulWidget {
+  final VoidCallback? onRegisterSuccess;
 
-  const LoginScreen({super.key, this.onLoginSuccess});
+  const RegisterScreen({super.key, this.onRegisterSuccess});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _termsAccepted = false;
   bool _isLoading = false;
 
-  void _handleLogin() async {
+  void _handleRegister() async {
     if (!_termsAccepted) {
       _showSnack('Aceite os termos para continuar.');
       return;
     }
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      _showSnack('Preencha e-mail e senha.');
+    if (_nameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+      _showSnack('Preencha todos os campos.');
+      return;
+    }
+    if (_passwordController.text != _confirmPasswordController.text) {
+      _showSnack('As senhas não coincidem.');
       return;
     }
 
@@ -36,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await Future.delayed(const Duration(seconds: 2)); // simulate request
     setState(() => _isLoading = false);
 
-    Navigator.pushReplacementNamed(context, '/home');
+    widget.onRegisterSuccess?.call();
   }
 
   void _showSnack(String msg) {
@@ -49,16 +56,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _goToRegister() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const RegisterScreen()),
-    );
-  }
-
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -66,35 +69,55 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AuthColors.background,
+      // Back arrow
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: SafeArea(
+        top: false,
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              const SizedBox(height: 32),
+              const SizedBox(height: 8),
 
               // ── Alien avatar ──────────────────────────────────────────────
               const AlienAvatarCard(),
               const SizedBox(height: 16),
 
-              // ── Welcome badge ─────────────────────────────────────────────
-              const WelcomeBadge(),
+              // ── Badge ─────────────────────────────────────────────────────
+              const WelcomeBadge(text: 'CRIE SUA CONTA'),
               const SizedBox(height: 16),
               Text(
-                'ENTRAR',
+                'CADASTRAR',
                 style: TextStyle(
-                  fontSize: 48,
+                  fontSize: 44,
                   fontWeight: FontWeight.w900,
                   color: AuthColors.neonGreen,
                   shadows: [
                     Shadow(
-                      color: AuthColors.neonGreen.withOpacity(0.8),
+                      color: AuthColors.neonGreen.withValues(alpha: 0.8),
                       blurRadius: 20,
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 32),
+
+              // ── Nome ──────────────────────────────────────────────────────
+              AuthTextField(
+                label: 'NOME',
+                placeholder: 'Seu nome completo',
+                icon: Icons.person_outline,
+                controller: _nameController,
+                keyboardType: TextInputType.name,
+              ),
+              const SizedBox(height: 20),
 
               // ── E-mail ────────────────────────────────────────────────────
               AuthTextField(
@@ -114,6 +137,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 isPassword: true,
                 controller: _passwordController,
               ),
+              const SizedBox(height: 20),
+
+              // ── Confirmar senha ───────────────────────────────────────────
+              AuthTextField(
+                label: 'CONFIRMAR SENHA',
+                placeholder: '••••••••',
+                icon: Icons.lock_outline,
+                isPassword: true,
+                controller: _confirmPasswordController,
+              ),
               const SizedBox(height: 28),
 
               // ── Terms ─────────────────────────────────────────────────────
@@ -122,29 +155,29 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 36),
 
-              // ── Login button ──────────────────────────────────────────────
+              // ── Register button ───────────────────────────────────────────
               NeonActionButton(
-                label: 'ENTRAR →',
-                onPressed: _handleLogin,
+                label: 'CADASTRAR →',
+                onPressed: _handleRegister,
                 isLoading: _isLoading,
               ),
               const SizedBox(height: 28),
 
-              // ── Register link ─────────────────────────────────────────────
+              // ── Login link ────────────────────────────────────────────────
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Não tem conta? ',
+                    'Já tem conta? ',
                     style: TextStyle(
                       color: AuthColors.placeholderGrey,
                       fontSize: 14,
                     ),
                   ),
                   GestureDetector(
-                    onTap: _goToRegister,
+                    onTap: () => Navigator.of(context).pop(),
                     child: const Text(
-                      'Cadastre-se',
+                      'Fazer login',
                       style: TextStyle(
                         color: AuthColors.neonGreen,
                         fontSize: 14,
@@ -156,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 36),
             ],
           ),
         ),

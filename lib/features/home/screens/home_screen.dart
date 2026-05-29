@@ -1,12 +1,13 @@
 import 'package:bigger_bet/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/custom_bottom_nav_bar.dart';
 
 class BiggerBetHome extends StatelessWidget {
   const BiggerBetHome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
@@ -14,18 +15,17 @@ class BiggerBetHome extends StatelessWidget {
           children: [
             // Corpo da página rolável
             SingleChildScrollView(
-              padding: const EdgeInsets.only(
-                  bottom: 100), // Espaço para o menu inferior
+              padding: EdgeInsets.only(bottom: 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(),
-                  const SizedBox(height: 30),
-                  _buildBalanceSection(),
-                  const SizedBox(height: 40),
-                  _buildStatsSection(),
-                  const SizedBox(height: 30),
-                  _buildAssetsSection(),
+                  HomeHeader(),
+                  SizedBox(height: 30),
+                  BalanceSection(),
+                  SizedBox(height: 40),
+                  StatsSection(),
+                  SizedBox(height: 30),
+                  AssetsSection(),
                 ],
               ),
             ),
@@ -35,15 +35,20 @@ class BiggerBetHome extends StatelessWidget {
               bottom: 0,
               left: 0,
               right: 0,
-              child: _buildBottomNavBar(context),
+              child: CustomBottomNavBar(activeItem: NavBarItem.home),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildHeader() {
+class HomeHeader extends StatelessWidget {
+  const HomeHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
@@ -52,7 +57,7 @@ class BiggerBetHome extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.neonGreen.withOpacity(0.05),
+            color: AppColors.neonGreen.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           )
@@ -68,11 +73,11 @@ class BiggerBetHome extends StatelessWidget {
                 decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(12),
-                    border:
-                        Border.all(color: AppColors.neonGreen.withOpacity(0.5)),
+                    border: Border.all(
+                        color: AppColors.neonGreen.withValues(alpha: 0.5)),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.neonGreen.withOpacity(0.2),
+                        color: AppColors.neonGreen.withValues(alpha: 0.2),
                         blurRadius: 10,
                         spreadRadius: 1,
                       )
@@ -90,7 +95,7 @@ class BiggerBetHome extends StatelessWidget {
                   letterSpacing: 1.2,
                   shadows: [
                     Shadow(
-                      color: AppColors.neonGreen.withOpacity(0.6),
+                      color: AppColors.neonGreen.withValues(alpha: 0.6),
                       blurRadius: 10,
                     )
                   ],
@@ -103,8 +108,13 @@ class BiggerBetHome extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildBalanceSection() {
+class BalanceSection extends StatelessWidget {
+  const BalanceSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Column(
         children: [
@@ -127,11 +137,11 @@ class BiggerBetHome extends StatelessWidget {
               letterSpacing: -1.5,
               shadows: [
                 Shadow(
-                  color: AppColors.neonGreen.withOpacity(0.8),
+                  color: AppColors.neonGreen.withValues(alpha: 0.8),
                   blurRadius: 25,
                 ),
                 Shadow(
-                  color: AppColors.neonGreen.withOpacity(0.4),
+                  color: AppColors.neonGreen.withValues(alpha: 0.4),
                   blurRadius: 50,
                 ),
               ],
@@ -141,14 +151,13 @@ class BiggerBetHome extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-                color:
-                    Colors.black, // Mantido preto puro para contraste do badge
+                color: Colors.black,
                 borderRadius: BorderRadius.circular(20),
                 border:
-                    Border.all(color: AppColors.neonGreenDark.withOpacity(0.3)),
+                    Border.all(color: AppColors.neonGreenDark.withValues(alpha: 0.3)),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.neonGreen.withOpacity(0.05),
+                    color: AppColors.neonGreen.withValues(alpha: 0.05),
                     blurRadius: 10,
                   )
                 ]),
@@ -185,8 +194,13 @@ class BiggerBetHome extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildStatsSection() {
+class StatsSection extends StatelessWidget {
+  const StatsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -217,7 +231,7 @@ class BiggerBetHome extends StatelessWidget {
                     color: AppColors.cardBlueDark,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: AppColors.buttonBlue.withOpacity(0.1)),
+                        color: AppColors.buttonBlue.withValues(alpha: 0.1)),
                   ),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,10 +273,10 @@ class BiggerBetHome extends StatelessWidget {
                       color: AppColors.cardGreenDark,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                          color: AppColors.neonGreen.withOpacity(0.1)),
+                          color: AppColors.neonGreen.withValues(alpha: 0.1)),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.neonGreen.withOpacity(0.02),
+                          color: AppColors.neonGreen.withValues(alpha: 0.02),
                           blurRadius: 20,
                           spreadRadius: 5,
                         )
@@ -297,7 +311,7 @@ class BiggerBetHome extends StatelessWidget {
                                     shadows: [
                                       Shadow(
                                           color: AppColors.neonGreen
-                                              .withOpacity(0.5),
+                                              .withValues(alpha: 0.5),
                                           blurRadius: 10)
                                     ]),
                               ),
@@ -315,7 +329,7 @@ class BiggerBetHome extends StatelessWidget {
                             height: 4,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: AppColors.textWhite.withOpacity(0.1),
+                              color: AppColors.textWhite.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(2),
                             ),
                             child: FractionallySizedBox(
@@ -345,14 +359,19 @@ class BiggerBetHome extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildAssetsSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+class AssetsSection extends StatelessWidget {
+  const AssetsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
@@ -379,18 +398,38 @@ class BiggerBetHome extends StatelessWidget {
               )
             ],
           ),
-          const SizedBox(height: 15),
-          _buildAssetItem(
-              Icons.home_outlined, 'Uma Casa Inteira', 'Valor: R\$ 450.000'),
-          const SizedBox(height: 15),
-          _buildAssetItem(Icons.directions_car_outlined, 'Carro do Ano',
-              'Valor: R\$ 120.000'),
+          SizedBox(height: 15),
+          AssetItemCard(
+            icon: Icons.home_outlined,
+            title: 'Uma Casa Inteira',
+            subtitle: 'Valor: R\$ 450.000',
+          ),
+          SizedBox(height: 15),
+          AssetItemCard(
+            icon: Icons.directions_car_outlined,
+            title: 'Carro do Ano',
+            subtitle: 'Valor: R\$ 120.000',
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildAssetItem(IconData icon, String title, String subtitle) {
+class AssetItemCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const AssetItemCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Container(
@@ -440,111 +479,11 @@ class BiggerBetHome extends StatelessWidget {
             'VENDER',
             style:
                 TextStyle(fontSize: 12, fontWeight: FontWeight.bold, shadows: [
-              Shadow(color: AppColors.neonGreen.withOpacity(0.5), blurRadius: 5)
+              Shadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 5)
             ]),
           ),
         )
       ],
     );
-  }
-
-  Widget _buildBottomNavBar(context) {
-    return Container(
-        height: 90,
-        padding:
-            const EdgeInsets.only(bottom: 20, left: 20, right: 20, top: 15),
-        decoration: BoxDecoration(
-            color: AppColors.bottomNavBackground,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            ),
-            border: Border(
-              top: BorderSide(
-                  color: AppColors.neonGreen.withOpacity(0.2), width: 1),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.neonGreen.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, -5),
-              )
-            ]),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            // HOME (já está selecionado)
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/home');
-              },
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.neonGreen,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.neonGreen.withOpacity(0.4),
-                      blurRadius: 15,
-                      spreadRadius: 2,
-                    )
-                  ],
-                ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.home, color: Colors.black, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      'Início',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-
-            // GAMES
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/games');
-              },
-              child: const Icon(
-                Icons.sports_esports_outlined,
-                color: AppColors.textGrey,
-                size: 26,
-              ),
-            ),
-
-            // INFO
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/info');
-              },
-              child: const Icon(
-                Icons.chat_bubble_outline,
-                color: AppColors.textGrey,
-                size: 24,
-              ),
-            ),
-
-            // PERFIL
-            GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/perfil');
-              },
-              child: const Icon(
-                Icons.face,
-                color: AppColors.textGrey,
-                size: 26,
-              ),
-            ),
-          ],
-        ));
   }
 }

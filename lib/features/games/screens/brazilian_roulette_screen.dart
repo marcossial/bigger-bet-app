@@ -107,7 +107,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
                   border: Border.all(color: AppColors.neonGreen, width: 4),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.neonGreen.withOpacity(0.3),
+                      color: AppColors.neonGreen.withValues(alpha: 0.3),
                       blurRadius: 30,
                       spreadRadius: 5,
                     )

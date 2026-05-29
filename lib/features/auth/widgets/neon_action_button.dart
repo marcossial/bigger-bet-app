@@ -25,7 +25,7 @@ class NeonActionButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
           boxShadow: [
             BoxShadow(
-              color: AuthColors.neonGreen.withOpacity(0.45),
+              color: AuthColors.neonGreen.withValues(alpha: 0.45),
               blurRadius: 20,
               spreadRadius: 2,
               offset: const Offset(0, 6),

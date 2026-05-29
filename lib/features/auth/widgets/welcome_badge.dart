@@ -15,7 +15,7 @@ class WelcomeBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AuthColors.neonGreen.withOpacity(0.5),
+            color: AuthColors.neonGreen.withValues(alpha: 0.5),
             blurRadius: 16,
             spreadRadius: 1,
           ),

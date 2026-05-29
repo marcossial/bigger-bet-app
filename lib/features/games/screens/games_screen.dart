@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/custom_bottom_nav_bar.dart';
 import 'brazilian_roulette_screen.dart';
 import 'atomic_mines_screen.dart';
 import 'money_abductor_screen.dart';
@@ -8,48 +9,51 @@ class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key});
 
   static Map<String, WidgetBuilder> get routes => {
-        '/games/brazilian_roulette': (context) => const BrazilianRouletteScreen(),
+        '/games/brazilian_roulette': (context) =>
+            const BrazilianRouletteScreen(),
         '/games/atomic_mines': (context) => const AtomicMinesScreen(),
         '/games/money_abductor': (context) => const MoneyAbductorScreen(),
       };
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
         child: Stack(
           children: [
             SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 110),
+              padding: EdgeInsets.only(bottom: 110),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(),
-                  const SizedBox(height: 20),
-                  _buildHeroCard(),
-                  const SizedBox(height: 30),
-                  _buildGamesSection(context),
+                  GamesHeader(),
+                  SizedBox(height: 20),
+                  GamesHeroCard(),
+                  SizedBox(height: 30),
+                  GamesListSection(),
                 ],
               ),
             ),
-
-            // Bottom Nav
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
-              child: _buildBottomNavBar(context),
+              child: CustomBottomNavBar(activeItem: NavBarItem.games),
             ),
           ],
         ),
       ),
     );
   }
+}
 
-  // ───────────────── HEADER ─────────────────
-  Widget _buildHeader() {
+class GamesHeader extends StatelessWidget {
+  const GamesHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
@@ -70,19 +74,23 @@ class GamesScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  // ───────────────── HERO CARD ─────────────────
-  Widget _buildHeroCard() {
+class GamesHeroCard extends StatelessWidget {
+  const GamesHeroCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.neonGreen.withOpacity(0.6)),
+          border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.6)),
           boxShadow: [
             BoxShadow(
-              color: AppColors.neonGreen.withOpacity(0.2),
+              color: AppColors.neonGreen.withValues(alpha: 0.2),
               blurRadius: 30,
               spreadRadius: 2,
             )
@@ -112,7 +120,7 @@ class GamesScreen extends StatelessWidget {
                 fontWeight: FontWeight.w900,
                 shadows: [
                   Shadow(
-                    color: AppColors.neonGreen.withOpacity(0.8),
+                    color: AppColors.neonGreen.withValues(alpha: 0.8),
                     blurRadius: 20,
                   )
                 ],
@@ -129,8 +137,6 @@ class GamesScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
-            // BOTÃO
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -151,9 +157,7 @@ class GamesScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
             const Text(
               '* COM A BIGGER BET VOCÊ SEMPRE SABE QUEM VAI GANHAR!',
               style: TextStyle(
@@ -173,9 +177,13 @@ class GamesScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  // ───────────────── GAMES GRID ─────────────────
-  Widget _buildGamesSection(BuildContext context) {
+class GamesListSection extends StatelessWidget {
+  const GamesListSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     final games = [
       {
         'title': 'BRAZILIAN ROULETTE',
@@ -230,10 +238,11 @@ class GamesScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: const Color(0xFF111111),
-                    border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+                    border: Border.all(
+                        color: AppColors.neonGreen.withValues(alpha: 0.3)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(alpha: 0.5),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       )
@@ -244,7 +253,6 @@ class GamesScreen extends StatelessWidget {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        // Background Image
                         Image.asset(
                           game['image'] as String,
                           fit: BoxFit.cover,
@@ -252,25 +260,24 @@ class GamesScreen extends StatelessWidget {
                             return Container(
                               color: const Color(0xFF1A1A1A),
                               child: const Center(
-                                child: Icon(Icons.image_not_supported, color: AppColors.textGrey, size: 50),
+                                child: Icon(Icons.image_not_supported,
+                                    color: AppColors.textGrey, size: 50),
                               ),
                             );
                           },
                         ),
-                        // Dark Gradient Overlay
                         Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.9),
+                                Colors.black.withValues(alpha: 0.9),
                               ],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                             ),
                           ),
                         ),
-                        // Text Info
                         Positioned(
                           bottom: 20,
                           left: 20,
@@ -296,12 +303,12 @@ class GamesScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        // Play Button
                         Positioned(
                           bottom: 20,
                           right: 20,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
                               color: AppColors.neonGreen,
                               borderRadius: BorderRadius.circular(20),
@@ -322,45 +329,7 @@ class GamesScreen extends StatelessWidget {
                 ),
               ),
             );
-          }).toList(),
-        ],
-      ),
-    );
-  }
-
-  // ───────────────── NAV BAR ─────────────────
-  Widget _buildBottomNavBar(BuildContext context) {
-    return Container(
-      height: 90,
-      padding: const EdgeInsets.only(bottom: 20, top: 15),
-      decoration: const BoxDecoration(
-        color: AppColors.bottomNavBackground,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          IconButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
-            icon: const Icon(Icons.home, color: AppColors.textGrey),
-          ),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.neonGreen,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: const Icon(Icons.sports_esports, color: Colors.black),
-          ),
-          IconButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, '/info'),
-            icon: const Icon(Icons.chat_bubble_outline,
-                color: AppColors.textGrey),
-          ),
-          IconButton(
-            onPressed: () => Navigator.pushReplacementNamed(context, '/perfil'),
-            icon: const Icon(Icons.face, color: AppColors.textGrey),
-          ),
+          }),
         ],
       ),
     );
