@@ -90,16 +90,20 @@ class _OnboardingPage extends StatelessWidget {
         Expanded(
           child: Container(
             width: double.infinity,
+            margin: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: const Color(0xFF39FF14).withValues(alpha: 0.6),
-                width: 1.5,
+              border: const Border(
+                top: BorderSide(
+                  color: Color(0xCC39FF14),
+                  width: 3.0,
+                ),
               ),
               boxShadow: [
                 BoxShadow(
                   color: const Color(0xFF39FF14).withValues(alpha: 0.15),
-                  blurRadius: 24,
+                  offset: const Offset(0, -4),
+                  blurRadius: 12,
                   spreadRadius: 2,
                 ),
               ],
@@ -112,7 +116,13 @@ class _OnboardingPage extends StatelessWidget {
                 errorBuilder: (context, error, stackTrace) => Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0xFF2D1B69), Color(0xFFFF6B35)],
+                      colors: [
+                        Color(0xFF2D1B69),
+                        Color(0xFF2D1B69),
+                        Color(0xF2FF6B35),
+                        Color(0x1AFF6B35),
+                      ],
+                      stops: [0.0, 0.33, 0.66, 1.0],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
