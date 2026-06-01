@@ -76,21 +76,35 @@ class InfoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColors.textWhite,
+              size: 24,
+            ),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+          ),
           Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  border:
-                      Border.all(color: AppColors.neonGreen.withValues(alpha: 0.5)),
+                  border: Border.all(
+                    color: AppColors.neonGreen.withValues(alpha: 0.5),
+                  ),
                 ),
-                child:
-                    const Icon(Icons.adb, color: AppColors.neonGreen, size: 24),
+                child: const Icon(
+                  Icons.adb,
+                  color: AppColors.neonGreen,
+                  size: 24,
+                ),
               ),
               const SizedBox(width: 12),
               const Text(
@@ -103,7 +117,10 @@ class InfoHeader extends StatelessWidget {
               ),
             ],
           ),
-          const Icon(Icons.face, color: AppColors.textGrey, size: 20),
+          const Padding(
+            padding: EdgeInsets.only(right: 8),
+            child: Icon(Icons.face, color: AppColors.textGrey, size: 20),
+          ),
         ],
       ),
     );
