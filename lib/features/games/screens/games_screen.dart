@@ -33,6 +33,8 @@ class GamesScreen extends StatelessWidget {
                   GamesHeroCard(),
                   SizedBox(height: 30),
                   GamesListSection(),
+                  SizedBox(height: 40),
+                  EventosCatastroficosSection(),
                 ],
               ),
             ),
@@ -54,22 +56,58 @@ class GamesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.adb, color: AppColors.neonGreen, size: 28),
-          SizedBox(width: 10),
-          Text(
-            'BIGGER BET',
-            style: TextStyle(
-              color: AppColors.textWhite,
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.neonGreen.withValues(alpha: 0.5),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.neonGreen.withValues(alpha: 0.2),
+                      blurRadius: 10,
+                      spreadRadius: 1,
+                    )
+                  ],
+                ),
+                child:
+                    const Icon(Icons.adb, color: AppColors.neonGreen, size: 28),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                'BIGGER BET',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.textWhite,
+                  letterSpacing: 1.2,
+                  shadows: [
+                    Shadow(
+                      color: AppColors.neonGreen.withValues(alpha: 0.6),
+                      blurRadius: 10,
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
-          Spacer(),
-          Icon(Icons.face, color: AppColors.textGrey),
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.cardBorder),
+            ),
+            child: const Icon(Icons.face, color: AppColors.textGrey, size: 16),
+          ),
         ],
       ),
     );
@@ -84,19 +122,22 @@ class GamesHeroCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.6)),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
           boxShadow: [
             BoxShadow(
-              color: AppColors.neonGreen.withValues(alpha: 0.2),
+              color: AppColors.neonGreen.withValues(alpha: 0.05),
               blurRadius: 30,
               spreadRadius: 2,
             )
           ],
-          gradient: const LinearGradient(
-            colors: [Color(0xFF0D0D0D), Color(0xFF1A1A1A)],
+          gradient: LinearGradient(
+            colors: [
+              AppColors.neonGreen.withValues(alpha: 0.05),
+              Colors.transparent,
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -104,20 +145,31 @@ class GamesHeroCard extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              'BEM-VINDO AO',
+              'O ESPAÇO É O DESTINO (DA SUA CONTA)',
               style: TextStyle(
                 color: AppColors.textGrey,
-                fontSize: 12,
+                fontSize: 10,
                 letterSpacing: 2,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 12),
+            const Text(
+              'BEM-VINDO AO',
+              style: TextStyle(
+                color: AppColors.textWhite,
+                fontSize: 28,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+              ),
+            ),
             Text(
               'BIGGER BET',
               style: TextStyle(
-                color: AppColors.neonGreen,
-                fontSize: 28,
+                fontSize: 48,
                 fontWeight: FontWeight.w900,
+                color: AppColors.neonGreen,
+                letterSpacing: -1,
                 shadows: [
                   Shadow(
                     color: AppColors.neonGreen.withValues(alpha: 0.8),
@@ -126,50 +178,71 @@ class GamesHeroCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
+            Image.asset(
+              'assets/images/alien_avatar.png',
+              height: 120,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.error, color: AppColors.neonGreen, size: 60),
+            ),
+            const SizedBox(height: 16),
             const Text(
               'A primeira plataforma intergaláctica\nonde a probabilidade é apenas uma\nsugestão que ignoramos.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.textGrey,
+                color: AppColors.textWhite,
                 fontSize: 13,
                 height: 1.4,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF4B5EFF), Color(0xFF3A4EDB)],
+                  colors: [AppColors.buttonBlue, AppColors.buttonBlueDark],
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.buttonBlue.withValues(alpha: 0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 5),
+                  )
+                ],
               ),
               child: const Center(
                 child: Text(
-                  'VAMOS JUNTOS PERDER SEU DINHEIRO *',
+                  'VAMOS JUNTOS PERDER\nSEU DINHEIRO *',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
+                    fontSize: 14,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             const Text(
               '* COM A BIGGER BET VOCÊ SEMPRE SABE QUEM VAI GANHAR!',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.textGrey,
                 fontSize: 9,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const Text(
               '(NÓS VAMOS GANHAR)',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.neonGreen,
                 fontSize: 9,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
@@ -184,33 +257,12 @@ class GamesListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final games = [
-      {
-        'title': 'BRAZILIAN ROULETTE',
-        'subtitle': 'A roleta que sempre cai no zero',
-        'route': '/games/brazilian_roulette',
-        'image': 'assets/images/brazilian_roulette.png'
-      },
-      {
-        'title': 'ATOMIC MINES',
-        'subtitle': 'Onde a primeira casa já é bomba',
-        'route': '/games/atomic_mines',
-        'image': 'assets/images/atomic_mines.png'
-      },
-      {
-        'title': 'MONEY ABDUCTOR',
-        'subtitle': 'Crash instantâneo em 1.01x',
-        'route': '/games/money_abductor',
-        'image': 'assets/images/money_abductor.png'
-      },
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Jogos',
             style: TextStyle(
               color: AppColors.textWhite,
@@ -218,117 +270,142 @@ class GamesListSection extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
-          const Text(
-            'Os mais justos da galáxia',
-            style: TextStyle(color: AppColors.textGrey, fontSize: 14),
-          ),
-          const SizedBox(height: 20),
+          SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: games.map((game) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, game['route'] as String);
-                    },
-                    borderRadius: BorderRadius.circular(20),
-                    child: Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: const Color(0xFF111111),
-                        border: Border.all(
-                            color: AppColors.neonGreen.withValues(alpha: 0.3)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          )
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            Image.asset(
-                              game['image'] as String,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: const Color(0xFF1A1A1A),
-                                  child: const Center(
-                                    child: Icon(Icons.image_not_supported,
-                                        color: AppColors.textGrey, size: 30),
-                                  ),
-                                );
-                              },
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.black.withValues(alpha: 0.9),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 12,
-                              left: 12,
-                              right: 12,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    game['title'] as String,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: AppColors.neonGreen,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    width: double.infinity,
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.neonGreen,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        'JOGAR',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+            children: [
+              Text(
+                'Escolha como ser depenado',
+                style: TextStyle(color: AppColors.textGrey, fontSize: 14),
+              ),
+              Text(
+                'VER TUDO',
+                style: TextStyle(
+                  color: AppColors.neonGreen,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1,
                 ),
-              );
-            }).toList(),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _GameCircleIcon(
+                title: 'BRAZILIAN\nROULETTE',
+                icon: Icons.track_changes,
+                iconColor: AppColors.buttonBlue,
+                route: '/games/brazilian_roulette',
+              ),
+              _GameCircleIcon(
+                title: 'ATOMIC\nMINES',
+                icon: Icons.flare,
+                iconColor: AppColors.neonGreen,
+                route: '/games/atomic_mines',
+              ),
+              _GameCircleIcon(
+                title: 'MONEY\nABDUCTOR',
+                icon: Icons.rocket_launch,
+                iconColor: AppColors.buttonBlue,
+                route: '/games/money_abductor',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GameCircleIcon extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color iconColor;
+  final String route;
+
+  const _GameCircleIcon({
+    required this.title,
+    required this.icon,
+    required this.iconColor,
+    required this.route,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, route),
+      child: Column(
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              color: const Color(0xFF151515),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+            ),
+            child: Center(
+              child: Icon(icon, color: iconColor, size: 32),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: AppColors.textGrey,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EventosCatastroficosSection extends StatelessWidget {
+  const EventosCatastroficosSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'EVENTOS CATASTRÓFICOS',
+            style: TextStyle(
+              color: AppColors.textWhite,
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 1,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            height: 100,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
+              ),
+              border:
+                  Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.buttonBlue.withValues(alpha: 0.2),
+                  Colors.transparent,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
           ),
         ],
       ),
