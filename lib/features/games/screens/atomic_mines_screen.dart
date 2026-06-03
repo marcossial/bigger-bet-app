@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:bigger_bet/features/games/utils/finance_manager.dart';
+import 'package:bigger_bet/core/database/database_service.dart';
+import 'package:bigger_bet/core/services/session_service.dart';
 
 /// TELA DO JOGO: Campo Minado Sarcástico ("Atomic Mines")
 /// 
@@ -20,7 +22,8 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
   // VARIÁVEIS DE ESTADO
   // ──────────────────────────────────────────────────────────────────────────
   
-  double _saldo = 1000.00; // Saldo inicial fictício
+  double _saldo = 0.00; // Loaded from DB
+  int? _userId;
   double _aposta = 100.00; // Valor da aposta padrão
   double _premioAcumulado = 0.00; // Prêmio que o usuário acumulou na rodada atual
   
@@ -48,6 +51,30 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     1.25, 1.60, 2.10, 2.80, 3.80, 5.20, 7.20, 10.00, 14.50, 21.00, 
     32.00, 50.00, 80.00, 135.00, 240.00, 450.00, 900.00, 2000.00, 5000.00, 15000.00
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBalance();
+  }
+
+  Future<void> _loadBalance() async {
+    _userId = await SessionService.getUserId();
+    if (_userId != null) {
+      final balance = await DatabaseService().getUserBalance(_userId!);
+      if (mounted) {
+        setState(() {
+          _saldo = balance;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveBalance() async {
+    if (_userId != null) {
+      await DatabaseService().updateBalance(_userId!, _saldo);
+    }
+  }
 
   @override
   void dispose() {
@@ -83,6 +110,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     setState(() {
       _aposta = valorDigitado;
       _saldo -= _aposta;
+      _saveBalance();
       _jogoAtivo = true;
       _gameOver = false;
       _acertosSeguros = 0;
@@ -160,6 +188,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
 
     setState(() {
       _saldo += _premioAcumulado; // Deposita o prêmio acumulado de volta ao saldo
+      _saveBalance();
       _jogoAtivo = false;
       _mensagemAlgoritmo = '💰 Retirada efetuada com sucesso! Você levou R\$ ${_premioAcumulado.toStringAsFixed(2)} para casa (e comprou 2 segundos de paz de espírito).';
       _premioAcumulado = 0.00;
@@ -210,6 +239,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     final resultado = FinanceManager.venderRim(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -224,6 +254,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     final resultado = FinanceManager.pegarEmprestimoAgiota(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -238,6 +269,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     final resultado = FinanceManager.liquidarBens(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(

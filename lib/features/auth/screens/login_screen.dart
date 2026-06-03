@@ -5,6 +5,8 @@ import '../widgets/neon_action_button.dart';
 import '../widgets/terms_checkbox.dart';
 import '../widgets/welcome_badge.dart';
 import '../../../core/theme/auth_colors.dart';
+import '../../../core/database/database_service.dart';
+import '../../../core/services/session_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback? onLoginSuccess;
@@ -32,8 +34,22 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 2)); // simulate request
+    
+    final dbService = DatabaseService();
+    final user = await dbService.loginUser(
+      _emailController.text,
+      _passwordController.text,
+    );
+
     setState(() => _isLoading = false);
+
+    if (user == null) {
+      _showSnack('E-mail ou senha inválidos.');
+      return;
+    }
+
+    // Login successful, save session
+    await SessionService.saveUserId(user['id'] as int);
 
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, '/home');

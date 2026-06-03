@@ -5,6 +5,7 @@ import '../widgets/neon_action_button.dart';
 import '../widgets/terms_checkbox.dart';
 import '../widgets/welcome_badge.dart';
 import '../../../core/theme/auth_colors.dart';
+import '../../../core/database/database_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   final VoidCallback? onRegisterSuccess;
@@ -40,8 +41,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(seconds: 2)); // simulate request
+    
+    final dbService = DatabaseService();
+    final resultId = await dbService.createUser(
+      _nameController.text,
+      _emailController.text,
+      _passwordController.text,
+    );
+
     setState(() => _isLoading = false);
+
+    if (resultId == -1) {
+      _showSnack('E-mail já está em uso.');
+      return;
+    }
 
     widget.onRegisterSuccess?.call();
   }

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:bigger_bet/features/games/utils/finance_manager.dart';
+import 'package:bigger_bet/core/database/database_service.dart';
+import 'package:bigger_bet/core/services/session_service.dart';
 
 /// TELA DO JOGO: Crash Sarcástico ("Money Abductor")
 /// 
@@ -21,7 +23,8 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
   // VARIÁVEIS DE ESTADO
   // ──────────────────────────────────────────────────────────────────────────
   
-  double _saldo = 1000.00; // Saldo inicial fictício
+  double _saldo = 0.00; // Loaded from DB
+  int? _userId;
   double _aposta = 100.00; // Valor da aposta padrão
   double _multiplicador = 1.00; // Multiplicador dinâmico do voo
   
@@ -35,6 +38,30 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
   // Controlador de texto e mensagens didáticas
   final TextEditingController _apostaController = TextEditingController(text: '100');
   String _mensagemAlgoritmo = 'Defina sua aposta e clique em "DECOLAR". O OVNI promete (mentira) que não vai te abduzir rápido.';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBalance();
+  }
+
+  Future<void> _loadBalance() async {
+    _userId = await SessionService.getUserId();
+    if (_userId != null) {
+      final balance = await DatabaseService().getUserBalance(_userId!);
+      if (mounted) {
+        setState(() {
+          _saldo = balance;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveBalance() async {
+    if (_userId != null) {
+      await DatabaseService().updateBalance(_userId!, _saldo);
+    }
+  }
 
   @override
   void dispose() {
@@ -71,6 +98,7 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
     setState(() {
       _aposta = valorDigitado;
       _saldo -= _aposta;
+      _saveBalance();
       _voando = true;
       _crashed = false;
       _sacou = false;
@@ -132,6 +160,7 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
 
     setState(() {
       _saldo += premioGanho; // Adiciona o prêmio de volta ao saldo
+      _saveBalance();
       _voando = false;
       _sacou = true;
       _mensagemAlgoritmo = '💰 SAQUE EFETUADO! Você escapou com R\$ ${premioGanho.toStringAsFixed(2)} (${_multiplicador.toStringAsFixed(2)}x). A diretoria está desapontada.';
@@ -180,6 +209,7 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
     final resultado = FinanceManager.venderRim(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -194,6 +224,7 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
     final resultado = FinanceManager.pegarEmprestimoAgiota(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -208,6 +239,7 @@ class _MoneyAbductorScreenState extends State<MoneyAbductorScreen> {
     final resultado = FinanceManager.liquidarBens(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(

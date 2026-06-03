@@ -2,6 +2,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:bigger_bet/features/games/utils/finance_manager.dart';
+import 'package:bigger_bet/core/database/database_service.dart';
+import 'package:bigger_bet/core/services/session_service.dart';
 
 /// TELA DO JOGO: ROleta Sarcástica e Educativa ("Brazilian Roulette")
 /// 
@@ -24,7 +26,8 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
   // VARIÁVEIS DE ESTADO (O coração dinâmico da tela)
   // ──────────────────────────────────────────────────────────────────────────
   
-  double _saldo = 1000.00; // Saldo inicial fictício
+  double _saldo = 0.00; // Loaded from DB
+  int? _userId;
   double _aposta = 100.00; // Valor da aposta padrão
   bool _girando = false; // Bloqueia cliques novos se a roleta já estiver girando
   String _mensagemAlgoritmo = 'A roleta da felicidade (totalmente honesta) te espera! Aposte já.';
@@ -73,6 +76,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
   @override
   void initState() {
     super.initState();
+    _loadBalance();
 
     // 1. Inicializa o controlador da animação durando 3.5 segundos
     _animationController = AnimationController(
@@ -110,6 +114,24 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     super.dispose();
   }
 
+  Future<void> _loadBalance() async {
+    _userId = await SessionService.getUserId();
+    if (_userId != null) {
+      final balance = await DatabaseService().getUserBalance(_userId!);
+      if (mounted) {
+        setState(() {
+          _saldo = balance;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveBalance() async {
+    if (_userId != null) {
+      await DatabaseService().updateBalance(_userId!, _saldo);
+    }
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   // LÓGICA DO JOGO (Simples e didática)
   // ──────────────────────────────────────────────────────────────────────────
@@ -138,6 +160,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     setState(() {
       _aposta = valorDigitado;
       _saldo -= _aposta; // Deduz a aposta do saldo atual
+      _saveBalance();
       _girando = true;
       _mensagemAlgoritmo = 'Roleta girando... O algoritmo está fingindo que faz sorteios aleatórios...';
 
@@ -207,6 +230,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
       if (setor['isWin'] == true) {
         double premioSignificativo = _aposta * 100; // Super prêmio de 100x a aposta!
         _saldo += premioSignificativo;
+        _saveBalance();
         _mensagemAlgoritmo = '⚙️ BUG DETECTADO: nossa, parece que voce ganhou desta vez (Faturou R\$ ${premioSignificativo.toStringAsFixed(2)}!)... que tal jogar de novo e dobrar o valor? 💸🔥';
       } else {
         // Seleciona um dos comentários sarcásticos de perda aleatoriamente
@@ -227,6 +251,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     final resultado = FinanceManager.venderRim(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -241,6 +266,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     final resultado = FinanceManager.pegarEmprestimoAgiota(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
@@ -255,6 +281,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     final resultado = FinanceManager.liquidarBens(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(

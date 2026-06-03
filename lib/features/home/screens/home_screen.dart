@@ -1,6 +1,8 @@
 import 'package:bigger_bet/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/custom_bottom_nav_bar.dart';
+import '../../../core/database/database_service.dart';
+import '../../../core/services/session_service.dart';
 
 class BiggerBetHome extends StatelessWidget {
   const BiggerBetHome({super.key});
@@ -110,8 +112,33 @@ class HomeHeader extends StatelessWidget {
   }
 }
 
-class BalanceSection extends StatelessWidget {
+class BalanceSection extends StatefulWidget {
   const BalanceSection({super.key});
+
+  @override
+  State<BalanceSection> createState() => _BalanceSectionState();
+}
+
+class _BalanceSectionState extends State<BalanceSection> {
+  double _balance = 0.00;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBalance();
+  }
+
+  Future<void> _loadBalance() async {
+    final userId = await SessionService.getUserId();
+    if (userId != null) {
+      final balance = await DatabaseService().getUserBalance(userId);
+      if (mounted) {
+        setState(() {
+          _balance = balance;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +156,7 @@ class BalanceSection extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            'R\$ 0,42',
+            'R\$ ${_balance.toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 56,
               fontWeight: FontWeight.w900,
