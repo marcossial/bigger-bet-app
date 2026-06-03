@@ -25,7 +25,7 @@ class _BiggerBetHomeState extends State<BiggerBetHome> {
     final casaVendida = await FinanceManager.isBemVendido('casa');
     final carroVendido = await FinanceManager.isBemVendido('carro');
     final telefoneVendido = await FinanceManager.isBemVendido('telefone');
-    
+
     Set<String> vendidos = {};
     if (casaVendida) vendidos.add('casa');
     if (carroVendido) vendidos.add('carro');
@@ -44,20 +44,20 @@ class _BiggerBetHomeState extends State<BiggerBetHome> {
       _saldo += valor;
       _bensVendidos.add(idBem);
     });
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            mensagem, 
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
-          ),
+          content: Text(mensagem,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold)),
           backgroundColor: AppColors.neonGreenDark,
           duration: const Duration(seconds: 4),
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.only(bottom: 90, left: 20, right: 20),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
     }
@@ -219,8 +219,8 @@ class BalanceSection extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(20),
-                border:
-                    Border.all(color: AppColors.neonGreenDark.withValues(alpha: 0.3)),
+                border: Border.all(
+                    color: AppColors.neonGreenDark.withValues(alpha: 0.3)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.neonGreen.withValues(alpha: 0.05),
@@ -259,7 +259,8 @@ class BalanceSection extends StatelessWidget {
           const SizedBox(height: 20),
           ElevatedButton.icon(
             onPressed: () => _mostrarPopUpSaque(context),
-            icon: const Icon(Icons.monetization_on_outlined, color: Colors.black, size: 16),
+            icon: const Icon(Icons.monetization_on_outlined,
+                color: Colors.black, size: 16),
             label: const Text(
               'SACAR SALDO (PIX)',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
@@ -291,7 +292,10 @@ class BalanceSection extends StatelessWidget {
             SizedBox(width: 8),
             Text(
               'SAQUE INDISPONÍVEL',
-              style: TextStyle(color: AppColors.neonPink, fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(
+                  color: AppColors.neonPink,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
             ),
           ],
         ),
@@ -302,7 +306,8 @@ class BalanceSection extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('TENTAR DE NOVO', style: TextStyle(color: AppColors.textGrey)),
+            child: const Text('TENTAR DE NOVO',
+                style: TextStyle(color: AppColors.textGrey)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context),
@@ -310,7 +315,8 @@ class BalanceSection extends StatelessWidget {
               backgroundColor: AppColors.neonGreen,
               foregroundColor: Colors.black,
             ),
-            child: const Text('CONTINUAR APOSTANDO', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text('CONTINUAR APOSTANDO',
+                style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -487,7 +493,8 @@ class AssetsSection extends StatelessWidget {
   final void Function(double valor, String idBem, String mensagem) onVenderBem;
   final Set<String> bensVendidos;
 
-  const AssetsSection({super.key, required this.onVenderBem, required this.bensVendidos});
+  const AssetsSection(
+      {super.key, required this.onVenderBem, required this.bensVendidos});
 
   @override
   Widget build(BuildContext context) {
@@ -531,7 +538,8 @@ class AssetsSection extends StatelessWidget {
             title: 'Uma Casa Inteira',
             subtitle: 'Valor: R\$ 450.000',
             isSold: bensVendidos.contains('casa'),
-            onSell: () => onVenderBem(450000.00, 'casa', 'Ótima escolha vender sua casa, você nem precisava dela mesmo!'),
+            onSell: () => onVenderBem(450000.00, 'casa',
+                'Ótima escolha vender sua casa, você nem precisava dela mesmo!'),
           ),
           const SizedBox(height: 15),
           AssetItemCard(
@@ -539,7 +547,8 @@ class AssetsSection extends StatelessWidget {
             title: 'Carro do Ano',
             subtitle: 'Valor: R\$ 120.000',
             isSold: bensVendidos.contains('carro'),
-            onSell: () => onVenderBem(120000.00, 'carro', 'Carro vendido com sucesso! Pelo menos você não precisa mais pagar o IPVA.'),
+            onSell: () => onVenderBem(120000.00, 'carro',
+                'Carro vendido com sucesso! Pelo menos você não precisa mais pagar o IPVA.'),
           ),
           const SizedBox(height: 15),
           AssetItemCard(
@@ -547,7 +556,8 @@ class AssetsSection extends StatelessWidget {
             title: 'Telefone Celular',
             subtitle: 'Valor: R\$ 4.500',
             isSold: bensVendidos.contains('telefone'),
-            onSell: () => onVenderBem(4500.00, 'telefone', 'Parabéns por vender seu telefone, agora você tem o saldo necessário para jogar mais. Mas... como você vai jogar sem ele, né?'),
+            onSell: () => onVenderBem(4500.00, 'telefone',
+                'Parabéns por vender seu telefone, agora você tem o saldo necessário para jogar mais. Mas... como você vai jogar sem ele, né?'),
           ),
         ],
       ),
@@ -615,12 +625,17 @@ class AssetItemCard extends StatelessWidget {
               ScaffoldMessenger.of(context).clearSnackBars();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Você já vendeu isso! Não tem como vender duas vezes.', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  content: const Text(
+                      'Você já vendeu isso! Não tem como vender duas vezes.',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
                   backgroundColor: AppColors.neonPink,
                   duration: const Duration(seconds: 3),
                   behavior: SnackBarBehavior.floating,
-                  margin: const EdgeInsets.only(bottom: 90, left: 20, right: 20),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  margin:
+                      const EdgeInsets.only(bottom: 90, left: 20, right: 20),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
                 ),
               );
             } else {
@@ -629,7 +644,11 @@ class AssetItemCard extends StatelessWidget {
           },
           style: OutlinedButton.styleFrom(
             foregroundColor: isSold ? AppColors.textGrey : AppColors.neonGreen,
-            side: BorderSide(color: isSold ? AppColors.textGrey.withValues(alpha: 0.5) : AppColors.neonGreen, width: 1),
+            side: BorderSide(
+                color: isSold
+                    ? AppColors.textGrey.withValues(alpha: 0.5)
+                    : AppColors.neonGreen,
+                width: 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -637,10 +656,16 @@ class AssetItemCard extends StatelessWidget {
           ),
           child: Text(
             isSold ? 'VENDIDO' : 'VENDER',
-            style:
-                TextStyle(fontSize: 12, fontWeight: FontWeight.bold, shadows: isSold ? [] : [
-              Shadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 5)
-            ]),
+            style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                shadows: isSold
+                    ? []
+                    : [
+                        Shadow(
+                            color: AppColors.neonGreen.withValues(alpha: 0.5),
+                            blurRadius: 5)
+                      ]),
           ),
         )
       ],

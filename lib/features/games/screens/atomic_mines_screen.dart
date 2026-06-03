@@ -4,7 +4,7 @@ import '../../../../core/theme/app_theme.dart';
 import 'package:bigger_bet/features/games/utils/finance_manager.dart';
 
 /// TELA DO JOGO: Campo Minado Sarcástico ("Atomic Mines")
-/// 
+///
 /// Esta classe é um [StatefulWidget] porque armazena estados que mudam
 /// dinamicamente de acordo com as ações do jogador: saldo, aposta, posição das bombas,
 /// casas clicadas e prêmios acumulados na rodada.
@@ -19,25 +19,31 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
   // ──────────────────────────────────────────────────────────────────────────
   // VARIÁVEIS DE ESTADO
   // ──────────────────────────────────────────────────────────────────────────
-  
-  double _saldo = 1000.00; // Saldo inicial fictício
+
+  double _saldo = 0.00; // Loaded from DB
   double _aposta = 100.00; // Valor da aposta padrão
-  double _premioAcumulado = 0.00; // Prêmio que o usuário acumulou na rodada atual
-  
+  double _premioAcumulado =
+      0.00; // Prêmio que o usuário acumulou na rodada atual
+
   bool _jogoAtivo = false; // Indica se uma rodada está em andamento
   bool _gameOver = false; // Indica se o usuário clicou em uma bomba e perdeu
-  
+
   final int _gridSize = 25; // Grid de 5x5 = 25 casas
   final int _totalBombas = 5; // Quantidade de bombas escondidas no tabuleiro
-  int _acertosSeguros = 0; // Conta quantos cliques seguros foram feitos na rodada
+  int _acertosSeguros =
+      0; // Conta quantos cliques seguros foram feitos na rodada
 
   // Listas de controle para o tabuleiro
-  List<bool> _bombaPositions = List.filled(25, false); // Guarda onde estão as bombas
-  List<bool> _casasReveladas = List.filled(25, false); // Guarda quais casas já foram abertas
+  List<bool> _bombaPositions =
+      List.filled(25, false); // Guarda onde estão as bombas
+  List<bool> _casasReveladas =
+      List.filled(25, false); // Guarda quais casas já foram abertas
 
   // Controlador do campo de texto da aposta e mensagens didáticas
-  final TextEditingController _apostaController = TextEditingController(text: '100');
-  String _mensagemAlgoritmo = 'Defina sua aposta e clique em "INICIAR JOGO". O algoritmo promete (mentira) que esta rodada é segura!';
+  final TextEditingController _apostaController =
+      TextEditingController(text: '100');
+  String _mensagemAlgoritmo =
+      'Defina sua aposta e clique em "INICIAR JOGO". O algoritmo promete (mentira) que esta rodada é segura!';
 
   // ──────────────────────────────────────────────────────────────────────────
   // MULTIPLICADORES PROGRESSIVOS (Estilo Cassino)
@@ -45,8 +51,26 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
   // A cada casa segura que o usuário revela, o prêmio dele é multiplicado por um fator maior!
   // Como são 5 bombas em 25 casas, o risco aumenta muito rápido, por isso os multiplicadores sobem exponencialmente.
   final List<double> _multiplicadores = [
-    1.25, 1.60, 2.10, 2.80, 3.80, 5.20, 7.20, 10.00, 14.50, 21.00, 
-    32.00, 50.00, 80.00, 135.00, 240.00, 450.00, 900.00, 2000.00, 5000.00, 15000.00
+    1.25,
+    1.60,
+    2.10,
+    2.80,
+    3.80,
+    5.20,
+    7.20,
+    10.00,
+    14.50,
+    21.00,
+    32.00,
+    50.00,
+    80.00,
+    135.00,
+    240.00,
+    450.00,
+    900.00,
+    2000.00,
+    5000.00,
+    15000.00
   ];
 
   @override
@@ -62,6 +86,10 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
         _saldo = saldo;
       });
     }
+  }
+
+  Future<void> _saveBalance() async {
+    await FinanceManager.saveSaldo(_saldo);
   }
 
   @override
@@ -82,14 +110,16 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     final valorDigitado = double.tryParse(_apostaController.text);
     if (valorDigitado == null || valorDigitado <= 0) {
       setState(() {
-        _mensagemAlgoritmo = 'Erro: Insira um valor válido de aposta. Não jogamos fiado.';
+        _mensagemAlgoritmo =
+            'Erro: Insira um valor válido de aposta. Não jogamos fiado.';
       });
       return;
     }
 
     if (valorDigitado > _saldo) {
       setState(() {
-        _mensagemAlgoritmo = 'Saldo insuficiente! Use nossa linha de crédito de emergência abaixo para obter fundos.';
+        _mensagemAlgoritmo =
+            'Saldo insuficiente! Use nossa linha de crédito de emergência abaixo para obter fundos.';
       });
       return;
     }
@@ -98,12 +128,14 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     setState(() {
       _aposta = valorDigitado;
       _saldo -= _aposta;
+      _saveBalance();
       _jogoAtivo = true;
       _gameOver = false;
       _acertosSeguros = 0;
       _premioAcumulado = 0.00;
-      _mensagemAlgoritmo = 'Minas ativadas! Escolha a primeira casa. Cuidado onde pisa!';
-      
+      _mensagemAlgoritmo =
+          'Minas ativadas! Escolha a primeira casa. Cuidado onde pisa!';
+
       // Reseta o estado do tabuleiro
       _casasReveladas = List.filled(_gridSize, false);
       _bombaPositions = List.filled(_gridSize, false);
@@ -139,17 +171,18 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
       if (_bombaPositions[index]) {
         _gameOver = true;
         _jogoAtivo = false;
-        
+
         // Revela a posição de TODAS as bombas no tabuleiro para o usuário ver onde errou
         for (int i = 0; i < _gridSize; i++) {
           if (_bombaPositions[i]) {
             _casasReveladas[i] = true;
           }
         }
-        
-        _mensagemAlgoritmo = '💣 BOOM! Explosão atômica detectada! Você perdeu R\$ ${_aposta.toStringAsFixed(2)} e todos os prêmios acumulados!';
+
+        _mensagemAlgoritmo =
+            '💣 BOOM! Explosão atômica detectada! Você perdeu R\$ ${_aposta.toStringAsFixed(2)} e todos os prêmios acumulados!';
         _mostrarDialogoDerrota();
-      } 
+      }
       // ──────────────────────────────────────────────────────────────────────
       // CASO 2: CLICOU EM UMA CASA SEGURA (Vitória Parcial)
       // ──────────────────────────────────────────────────────────────────────
@@ -162,9 +195,11 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
         // Se o usuário limpar todas as 20 casas seguras do tabuleiro, ele vence o prêmio máximo!
         if (_acertosSeguros == _gridSize - _totalBombas) {
           _sacarPremio();
-          _mensagemAlgoritmo = '🏆 INACREDITÁVEL! Você limpou o campo minado inteiro e ganhou R\$ ${_premioAcumulado.toStringAsFixed(2)}! O CEO está investigando se isso foi um hack.';
+          _mensagemAlgoritmo =
+              '🏆 INACREDITÁVEL! Você limpou o campo minado inteiro e ganhou R\$ ${_premioAcumulado.toStringAsFixed(2)}! O CEO está investigando se isso foi um hack.';
         } else {
-          _mensagemAlgoritmo = 'Casa limpa! Multiplicador atual: ${multiplicador}x. Seu prêmio acumulado: R\$ ${_premioAcumulado.toStringAsFixed(2)}. Deseja continuar ou prefere sacar?';
+          _mensagemAlgoritmo =
+              'Casa limpa! Multiplicador atual: ${multiplicador}x. Seu prêmio acumulado: R\$ ${_premioAcumulado.toStringAsFixed(2)}. Deseja continuar ou prefere sacar?';
         }
       }
     });
@@ -175,9 +210,12 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     if (!_jogoAtivo || _gameOver || _premioAcumulado <= 0) return;
 
     setState(() {
-      _saldo += _premioAcumulado; // Deposita o prêmio acumulado de volta ao saldo
+      _saldo +=
+          _premioAcumulado; // Deposita o prêmio acumulado de volta ao saldo
+      _saveBalance();
       _jogoAtivo = false;
-      _mensagemAlgoritmo = '💰 Retirada efetuada com sucesso! Você levou R\$ ${_premioAcumulado.toStringAsFixed(2)} para casa (e comprou 2 segundos de paz de espírito).';
+      _mensagemAlgoritmo =
+          '💰 Retirada efetuada com sucesso! Você levou R\$ ${_premioAcumulado.toStringAsFixed(2)} para casa (e comprou 2 segundos de paz de espírito).';
       _premioAcumulado = 0.00;
     });
     FinanceManager.saveSaldo(_saldo);
@@ -200,7 +238,8 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text(
           'EXPLOSÃO DETECTADA!',
-          style: TextStyle(color: AppColors.neonPink, fontWeight: FontWeight.bold),
+          style:
+              TextStyle(color: AppColors.neonPink, fontWeight: FontWeight.bold),
         ),
         content: const Text(
           'Inacreditável! Você encontrou uma ogiva nuclear tática. Seu dinheiro foi radioativamente transferido para os bolsos da diretoria.',
@@ -227,6 +266,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     final resultado = FinanceManager.venderRim(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     FinanceManager.saveSaldo(_saldo);
@@ -242,6 +282,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     final resultado = FinanceManager.pegarEmprestimoAgiota(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     FinanceManager.saveSaldo(_saldo);
@@ -257,6 +298,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
     final resultado = FinanceManager.liquidarBens(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     FinanceManager.saveSaldo(_saldo);
@@ -389,7 +431,8 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
           border: Border.all(color: AppColors.cardBorder),
         ),
         child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(), // Desabilita rolagem do GridView
+          physics:
+              const NeverScrollableScrollPhysics(), // Desabilita rolagem do GridView
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 5, // 5 colunas
             crossAxisSpacing: 8, // Espaço entre colunas
@@ -403,19 +446,22 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
             // Determina a cor de fundo com base no estado da casa
             Color tileColor = const Color(0xFF161616); // Cor padrão fechada
             Color borderColor = AppColors.cardBorder;
-            Widget tileContent = const Icon(Icons.question_mark, color: AppColors.textGrey, size: 16);
+            Widget tileContent = const Icon(Icons.question_mark,
+                color: AppColors.textGrey, size: 16);
 
             if (isRevelado) {
               if (temBomba) {
                 // Revelou bomba
                 tileColor = AppColors.neonPink.withValues(alpha: 0.2);
                 borderColor = AppColors.neonPink;
-                tileContent = const Icon(Icons.bolt, color: AppColors.neonPink, size: 24);
+                tileContent =
+                    const Icon(Icons.bolt, color: AppColors.neonPink, size: 24);
               } else {
                 // Revelou casa segura
                 tileColor = AppColors.neonGreen.withValues(alpha: 0.15);
                 borderColor = AppColors.neonGreen;
-                tileContent = const Icon(Icons.monetization_on, color: AppColors.neonGreen, size: 24);
+                tileContent = const Icon(Icons.monetization_on,
+                    color: AppColors.neonGreen, size: 24);
               }
             } else if (_jogoAtivo) {
               // Casa interativa ativa aguardando clique
@@ -462,7 +508,8 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.psychology_outlined, color: AppColors.neonPink, size: 18),
+              const Icon(Icons.psychology_outlined,
+                  color: AppColors.neonPink, size: 18),
               const SizedBox(width: 8),
               Text(
                 'MONITOR DO BUNKER',
@@ -532,14 +579,17 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
                       ),
                       filled: true,
                       fillColor: AppColors.background,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.cardBorder),
+                        borderSide:
+                            const BorderSide(color: AppColors.cardBorder),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: AppColors.neonGreen, width: 1.5),
+                        borderSide: const BorderSide(
+                            color: AppColors.neonGreen, width: 1.5),
                       ),
                     ),
                   ),
@@ -553,11 +603,15 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 14),
                   ),
                   child: const Text(
                     'INICIAR JOGO',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, letterSpacing: 0.5),
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5),
                   ),
                 ),
               ],
@@ -599,13 +653,15 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
                     ),
                     Text(
                       '$_acertosSeguros acertos seguros',
-                      style: const TextStyle(color: AppColors.textGrey, fontSize: 11),
+                      style: const TextStyle(
+                          color: AppColors.textGrey, fontSize: 11),
                     )
                   ],
                 ),
                 ElevatedButton.icon(
                   onPressed: _premioAcumulado > 0 ? _sacarPremio : null,
-                  icon: const Icon(Icons.monetization_on_outlined, color: Colors.black),
+                  icon: const Icon(Icons.monetization_on_outlined,
+                      color: Colors.black),
                   label: const Text('CASH OUT (SACAR)'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.neonGreen,
@@ -615,7 +671,8 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 16),
                   ),
                 ),
               ],
@@ -662,14 +719,16 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
       decoration: BoxDecoration(
         color: AppColors.cardGreenDark,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.neonGreenDark.withValues(alpha: 0.3)),
+        border:
+            Border.all(color: AppColors.neonGreenDark.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
-              Icon(Icons.healing_outlined, color: AppColors.neonGreen, size: 18),
+              Icon(Icons.healing_outlined,
+                  color: AppColors.neonGreen, size: 18),
               SizedBox(width: 8),
               Text(
                 'LINHA DE CRÉDITO DE EMERGÊNCIA',

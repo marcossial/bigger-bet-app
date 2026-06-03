@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:bigger_bet/core/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:bigger_bet/core/database/database_service.dart';
+import 'package:bigger_bet/core/services/session_service.dart';
 
 /// Modelo simples que encapsula o resultado de qualquer transação financeira sarcástica.
 /// Ele armazena o novo saldo, a frase que a IA (algoritmo) deve dizer e os dados do SnackBar.
@@ -19,23 +21,27 @@ class FinanceResult {
 }
 
 /// Gerenciador Financeiro Sarcástico Centralizado.
-/// 
+///
 /// Ele evita a duplicação de lógica (cálculos matemáticos de dinheiro) e de strings de texto
 /// satíricos em múltiplas telas de jogos.
 class FinanceManager {
-  static const String _saldoKey = 'user_balance';
   static const double _saldoInicial = 1000.00;
 
-  /// Retorna o saldo atual do usuário persistido localmente
+  /// Retorna o saldo atual do usuário persistido localmente no SQLite
   static Future<double> getSaldo() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble(_saldoKey) ?? _saldoInicial;
+    final userId = await SessionService.getUserId();
+    if (userId != null) {
+      return await DatabaseService().getUserBalance(userId);
+    }
+    return _saldoInicial;
   }
 
-  /// Salva o novo saldo do usuário
+  /// Salva o novo saldo do usuário no SQLite
   static Future<void> saveSaldo(double novoSaldo) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(_saldoKey, novoSaldo);
+    final userId = await SessionService.getUserId();
+    if (userId != null) {
+      await DatabaseService().updateBalance(userId, novoSaldo);
+    }
   }
 
   /// Verifica se um bem já foi vendido
@@ -49,12 +55,13 @@ class FinanceManager {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('bem_vendido_$idBem', true);
   }
-  
+
   /// Realiza a venda expressa do Rim do usuário
   static FinanceResult venderRim(double saldoAtual) {
     return FinanceResult(
       novoSaldo: saldoAtual + 5000.00,
-      mensagemAlgoritmo: '⚕️ Cirurgia expressa realizada! Seu rim foi vendido com sucesso por R\$ 5.000,00. Quem precisa de dois filtros afinal? Volte a apostar!',
+      mensagemAlgoritmo:
+          '⚕️ Cirurgia expressa realizada! Seu rim foi vendido com sucesso por R\$ 5.000,00. Quem precisa de dois filtros afinal? Volte a apostar!',
       mensagemToast: 'Transação: +R\$ 5.000,00 (Rim removido com sucesso)',
       corToast: AppColors.neonGreenDark,
     );
@@ -64,7 +71,8 @@ class FinanceManager {
   static FinanceResult pegarEmprestimoAgiota(double saldoAtual) {
     return FinanceResult(
       novoSaldo: saldoAtual + 10000.00,
-      mensagemAlgoritmo: '💸 R\$ 10.000,00 na conta! O agiota "Zé das Facas" aprovou o seu crédito com juros amigáveis de 450% ao dia. Ele mencionou algo sobre gostar de joelhos, mas ignore!',
+      mensagemAlgoritmo:
+          '💸 R\$ 10.000,00 na conta! O agiota "Zé das Facas" aprovou o seu crédito com juros amigáveis de 450% ao dia. Ele mencionou algo sobre gostar de joelhos, mas ignore!',
       mensagemToast: 'Empréstimo concedido: +R\$ 10.000,00 (Juros: 450% a.d.)',
       corToast: AppColors.neonPink,
     );
@@ -74,7 +82,8 @@ class FinanceManager {
   static FinanceResult liquidarBens(double saldoAtual) {
     return FinanceResult(
       novoSaldo: saldoAtual + 250000.00,
-      mensagemAlgoritmo: '🏠 Escrituras assinadas! Você vendeu seus bens por R\$ 250.000,00. Agora você tem o fôlego financeiro necessário para tentar quebrar a banca! Confia!',
+      mensagemAlgoritmo:
+          '🏠 Escrituras assinadas! Você vendeu seus bens por R\$ 250.000,00. Agora você tem o fôlego financeiro necessário para tentar quebrar a banca! Confia!',
       mensagemToast: 'Patrimônio liquidado: +R\$ 250.000,00',
       corToast: AppColors.buttonBlue,
     );

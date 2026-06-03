@@ -4,7 +4,7 @@ import '../../../../core/theme/app_theme.dart';
 import 'package:bigger_bet/features/games/utils/finance_manager.dart';
 
 /// TELA DO JOGO: ROleta Sarcástica e Educativa ("Brazilian Roulette")
-/// 
+///
 /// Esta classe é um [StatefulWidget] porque a tela precisa guardar e atualizar
 /// dados dinâmicos em tempo real, como o saldo do usuário, o valor apostado,
 /// a animação da roleta girando e as mensagens sarcásticas do algoritmo.
@@ -12,29 +12,32 @@ class BrazilianRouletteScreen extends StatefulWidget {
   const BrazilianRouletteScreen({super.key});
 
   @override
-  State<BrazilianRouletteScreen> createState() => _BrazilianRouletteScreenState();
+  State<BrazilianRouletteScreen> createState() =>
+      _BrazilianRouletteScreenState();
 }
 
 /// O Estado da tela estende a classe e mistura (mixin) o [SingleTickerProviderStateMixin]
 /// para podermos usar o [AnimationController], que gerencia o tempo e a velocidade da animação.
 class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     with SingleTickerProviderStateMixin {
-  
   // ──────────────────────────────────────────────────────────────────────────
   // VARIÁVEIS DE ESTADO (O coração dinâmico da tela)
   // ──────────────────────────────────────────────────────────────────────────
-  
-  double _saldo = 1000.00; // Saldo inicial fictício
+
+  double _saldo = 0.00; // Loaded from DB
   double _aposta = 100.00; // Valor da aposta padrão
-  bool _girando = false; // Bloqueia cliques novos se a roleta já estiver girando
-  String _mensagemAlgoritmo = 'A roleta da felicidade (totalmente honesta) te espera! Aposte já.';
+  bool _girando =
+      false; // Bloqueia cliques novos se a roleta já estiver girando
+  String _mensagemAlgoritmo =
+      'A roleta da felicidade (totalmente honesta) te espera! Aposte já.';
 
   // Controlador de animação do Flutter
   late AnimationController _animationController;
   late Animation<double> _animation;
 
   // Controlador do campo de texto da aposta
-  final TextEditingController _apostaController = TextEditingController(text: '100');
+  final TextEditingController _apostaController =
+      TextEditingController(text: '100');
 
   // Variáveis matemáticas da roleta
   double _anguloRotacao = 0.0; // Ângulo atual de rotação da roleta em radianos
@@ -43,7 +46,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
   // ──────────────────────────────────────────────────────────────────────────
   // CONFIGURAÇÃO DOS SETORES DA ROLETA
   // ──────────────────────────────────────────────────────────────────────────
-  
+
   // Criamos uma lista simples com os 8 setores da roleta.
   // Cada setor tem um título, uma cor de fundo cyberpunk e se é um setor vencedor (isWin).
   final List<Map<String, dynamic>> _setores = [
@@ -51,8 +54,16 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     {'titulo': 'QUASE LÁ!', 'cor': const Color(0xFF1E112A), 'isWin': false},
     {'titulo': 'CEO MAIS RICO', 'cor': const Color(0xFF0F1A1F), 'isWin': false},
     {'titulo': 'MUITO PERTO!', 'cor': const Color(0xFF1B1B1B), 'isWin': false},
-    {'titulo': 'GANHOU 100x!', 'cor': AppColors.neonGreen, 'isWin': true}, // O único vencedor!
-    {'titulo': 'TAXA EXTRA 99%', 'cor': const Color(0xFF240A1A), 'isWin': false},
+    {
+      'titulo': 'GANHOU 100x!',
+      'cor': AppColors.neonGreen,
+      'isWin': true
+    }, // O único vencedor!
+    {
+      'titulo': 'TAXA EXTRA 99%',
+      'cor': const Color(0xFF240A1A),
+      'isWin': false
+    },
     {'titulo': 'TENTE DE NOVO', 'cor': const Color(0xFF111425), 'isWin': false},
     {'titulo': 'QUASE GANHOU!', 'cor': const Color(0xFF101B15), 'isWin': false},
   ];
@@ -120,6 +131,10 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     super.dispose();
   }
 
+  Future<void> _saveBalance() async {
+    await FinanceManager.saveSaldo(_saldo);
+  }
+
   // ──────────────────────────────────────────────────────────────────────────
   // LÓGICA DO JOGO (Simples e didática)
   // ──────────────────────────────────────────────────────────────────────────
@@ -132,7 +147,8 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     final valorDigitado = double.tryParse(_apostaController.text);
     if (valorDigitado == null || valorDigitado <= 0) {
       setState(() {
-        _mensagemAlgoritmo = 'Erro: A banca não aceita promessas ou abraços. Insira um valor numérico.';
+        _mensagemAlgoritmo =
+            'Erro: A banca não aceita promessas ou abraços. Insira um valor numérico.';
       });
       return;
     }
@@ -140,7 +156,8 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     // Valida se o usuário tem saldo suficiente
     if (valorDigitado > _saldo) {
       setState(() {
-        _mensagemAlgoritmo = 'Saldo insuficiente! Que tal vender um órgão ou pedir um empréstimo para voltar ao jogo?';
+        _mensagemAlgoritmo =
+            'Saldo insuficiente! Que tal vender um órgão ou pedir um empréstimo para voltar ao jogo?';
       });
       return;
     }
@@ -148,8 +165,10 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     setState(() {
       _aposta = valorDigitado;
       _saldo -= _aposta; // Deduz a aposta do saldo atual
+      _saveBalance();
       _girando = true;
-      _mensagemAlgoritmo = 'Roleta girando... O algoritmo está fingindo que faz sorteios aleatórios...';
+      _mensagemAlgoritmo =
+          'Roleta girando... O algoritmo está fingindo que faz sorteios aleatórios...';
 
       // ──────────────────────────────────────────────────────────────────────
       // ALGORITMO RIGGED (A BANCA SEMPRE VENCE)
@@ -158,7 +177,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
       // Nos outros 99.9% dos casos, cai em um dos setores de perda.
       // E para prender o usuário psicologicamente, há 40% de chance de dar o setor "QUASE GANHOU" ou "QUASE LÁ".
       final chanceAleatoria = Random().nextDouble();
-      
+
       if (chanceAleatoria < 0.001) {
         _setorSorteado = 4; // Setor "GANHOU R$ 0.01" (Verde neon)
       } else {
@@ -170,7 +189,8 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
         } else {
           // Escolhe qualquer outro setor perdedor de forma aleatória
           final setoresPerdedores = [0, 2, 3, 5, 6];
-          _setorSorteado = setoresPerdedores[Random().nextInt(setoresPerdedores.length)];
+          _setorSorteado =
+              setoresPerdedores[Random().nextInt(setoresPerdedores.length)];
         }
       }
     });
@@ -181,19 +201,20 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     // ──────────────────────────────────────────────────────────────────────
     // A roleta tem 8 fatias. Logo, o tamanho de cada fatia em radianos é 2 * pi / 8 = pi / 4.
     double tamanhoSetor = (2 * pi) / 8;
-    
+
     // Para dar emoção, a roleta deve dar várias voltas inteiras no ar (de 6 a 9 voltas)
     int voltasCompletas = 6 + Random().nextInt(4);
-    
+
     // O ângulo final onde a roleta deve estacionar.
     // Queremos que o setor _setorSorteado pare exatamente apontado para o topo (ponteiro rosa).
-    double anguloFinal = (voltasCompletas * 2 * pi) + 
-        (2 * pi - (_setorSorteado * tamanhoSetor)) - 
-        (tamanhoSetor / 2) - 
+    double anguloFinal = (voltasCompletas * 2 * pi) +
+        (2 * pi - (_setorSorteado * tamanhoSetor)) -
+        (tamanhoSetor / 2) -
         (pi / 2);
 
     // Adiciona uma pequena variação aleatória de pixels dentro da fatia para parecer mais natural
-    double pequenaVariacao = (Random().nextDouble() - 0.5) * (tamanhoSetor * 0.6);
+    double pequenaVariacao =
+        (Random().nextDouble() - 0.5) * (tamanhoSetor * 0.6);
     anguloFinal += pequenaVariacao;
 
     // Configura e inicia a interpolação da animação
@@ -216,16 +237,21 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
       final setor = _setores[_setorSorteado];
 
       if (setor['isWin'] == true) {
-        double premioSignificativo = _aposta * 100; // Super prêmio de 100x a aposta!
+        double premioSignificativo =
+            _aposta * 100; // Super prêmio de 100x a aposta!
         _saldo += premioSignificativo;
-        _mensagemAlgoritmo = '⚙️ BUG DETECTADO: nossa, parece que voce ganhou desta vez (Faturou R\$ ${premioSignificativo.toStringAsFixed(2)}!)... que tal jogar de novo e dobrar o valor? 💸🔥';
+        _saveBalance();
+        _mensagemAlgoritmo =
+            '⚙️ BUG DETECTADO: nossa, parece que voce ganhou desta vez (Faturou R\$ ${premioSignificativo.toStringAsFixed(2)}!)... que tal jogar de novo e dobrar o valor? 💸🔥';
       } else {
         // Seleciona um dos comentários sarcásticos de perda aleatoriamente
-        _mensagemAlgoritmo = _mensagensPerda[Random().nextInt(_mensagensPerda.length)];
+        _mensagemAlgoritmo =
+            _mensagensPerda[Random().nextInt(_mensagensPerda.length)];
       }
 
       if (_saldo <= 0) {
-        _mensagemAlgoritmo = '💥 FALÊNCIA CONFIRMADA! Seu saldo foi a zero. Felizmente, nossos órgãos parceiros e agiotas estão prontos para ajudar!';
+        _mensagemAlgoritmo =
+            '💥 FALÊNCIA CONFIRMADA! Seu saldo foi a zero. Felizmente, nossos órgãos parceiros e agiotas estão prontos para ajudar!';
       }
     });
     FinanceManager.saveSaldo(_saldo);
@@ -239,6 +265,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     final resultado = FinanceManager.venderRim(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     FinanceManager.saveSaldo(_saldo);
@@ -254,6 +281,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     final resultado = FinanceManager.pegarEmprestimoAgiota(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     FinanceManager.saveSaldo(_saldo);
@@ -269,6 +297,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
     final resultado = FinanceManager.liquidarBens(_saldo);
     setState(() {
       _saldo = resultado.novoSaldo;
+      _saveBalance();
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     FinanceManager.saveSaldo(_saldo);
@@ -413,7 +442,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
             ],
           ),
         ),
-        
+
         // O corpo da roleta que de fato roda via código!
         Transform.rotate(
           angle: _anguloRotacao,
@@ -473,7 +502,8 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
         children: [
           Row(
             children: [
-              const Icon(Icons.psychology_outlined, color: AppColors.neonPink, size: 18),
+              const Icon(Icons.psychology_outlined,
+                  color: AppColors.neonPink, size: 18),
               const SizedBox(width: 8),
               Text(
                 'MENSAGEM DO ALGORITMO',
@@ -543,14 +573,16 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
                     ),
                     filled: true,
                     fillColor: AppColors.background,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: AppColors.cardBorder),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.neonGreen, width: 1.5),
+                      borderSide: const BorderSide(
+                          color: AppColors.neonGreen, width: 1.5),
                     ),
                   ),
                 ),
@@ -561,12 +593,14 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.neonGreen,
                   foregroundColor: Colors.black,
-                  disabledBackgroundColor: AppColors.neonGreen.withValues(alpha: 0.3),
+                  disabledBackgroundColor:
+                      AppColors.neonGreen.withValues(alpha: 0.3),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   elevation: _girando ? 0 : 5,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 ),
                 child: Text(
                   _girando ? 'GIRANDO...' : 'GIRAR',
@@ -605,7 +639,8 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
                   _apostaController.text = valor.toStringAsFixed(0);
                   _aposta = valor;
                   if (valor == _saldo) {
-                    _mensagemAlgoritmo = 'ALL IN! Agora sim! O algoritmo já reservou seu lugar debaixo da ponte com muito carinho! ❤️';
+                    _mensagemAlgoritmo =
+                        'ALL IN! Agora sim! O algoritmo já reservou seu lugar debaixo da ponte com muito carinho! ❤️';
                   }
                 });
               }
@@ -636,14 +671,16 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
       decoration: BoxDecoration(
         color: AppColors.cardGreenDark,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.neonGreenDark.withValues(alpha: 0.3)),
+        border:
+            Border.all(color: AppColors.neonGreenDark.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Row(
             children: [
-              Icon(Icons.healing_outlined, color: AppColors.neonGreen, size: 18),
+              Icon(Icons.healing_outlined,
+                  color: AppColors.neonGreen, size: 18),
               SizedBox(width: 8),
               Text(
                 'LINHA DE CRÉDITO DE EMERGÊNCIA',
@@ -721,7 +758,7 @@ class _RoulettePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final double raio = size.width / 2;
     final Offset centro = Offset(raio, raio);
-    
+
     // O tamanho angular de cada setor (360 graus divididos por 8 setores)
     final double anguloPasso = 2 * pi / setores.length;
 
@@ -758,7 +795,8 @@ class _RoulettePainter extends CustomPainter {
       );
 
       // 2. Desenha o texto de forma rotacionada dentro da fatia
-      _desenharTextoSetor(canvas, centro, raio, anguloInicio, anguloPasso, setor['titulo'] as String);
+      _desenharTextoSetor(canvas, centro, raio, anguloInicio, anguloPasso,
+          setor['titulo'] as String);
     }
 
     // 3. Desenha o aro externo brilhante da roleta (efeito neon)
@@ -770,12 +808,13 @@ class _RoulettePainter extends CustomPainter {
   }
 
   /// Escreve e alinha o texto de forma radial no centro de cada fatia circular
-  void _desenharTextoSetor(Canvas canvas, Offset centro, double raio, double anguloInicio, double anguloPasso, String texto) {
+  void _desenharTextoSetor(Canvas canvas, Offset centro, double raio,
+      double anguloInicio, double anguloPasso, String texto) {
     canvas.save(); // Salva o estado atual da tela de pintura
-    
+
     // Calcula o ângulo médio da fatia
     final double anguloMedio = anguloInicio + anguloPasso / 2;
-    
+
     // Translada o ponto de rotação para o centro do círculo e rotaciona o papel virtual
     canvas.translate(centro.dx, centro.dy);
     canvas.rotate(anguloMedio);
@@ -784,7 +823,9 @@ class _RoulettePainter extends CustomPainter {
     final textSpan = TextSpan(
       text: texto,
       style: TextStyle(
-        color: (texto == 'GANHOU 100x!' || texto == 'GANHOU R\$ 0.01') ? Colors.black : Colors.white.withValues(alpha: 0.8),
+        color: (texto == 'GANHOU 100x!' || texto == 'GANHOU R\$ 0.01')
+            ? Colors.black
+            : Colors.white.withValues(alpha: 0.8),
         fontSize: 9,
         fontWeight: FontWeight.w900,
         letterSpacing: 0.2,
@@ -798,7 +839,7 @@ class _RoulettePainter extends CustomPainter {
     );
 
     textPainter.layout();
-    
+
     // Posiciona o texto a 65% de distância do centro (área intermediária da fatia)
     final double x = raio * 0.65 - textPainter.width / 2;
     final double y = -textPainter.height / 2;
