@@ -41,13 +41,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     setState(() => _isLoading = true);
-    
+
     final dbService = DatabaseService();
     final resultId = await dbService.createUser(
       _nameController.text,
       _emailController.text,
       _passwordController.text,
     );
+
+    if (!mounted) return;
 
     setState(() => _isLoading = false);
 
@@ -56,7 +58,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
+    _showSnack('Conta criada com sucesso');
+
     widget.onRegisterSuccess?.call();
+
+    Navigator.of(context).pop();
   }
 
   void _showSnack(String msg) {
