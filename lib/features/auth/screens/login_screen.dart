@@ -5,7 +5,6 @@ import '../widgets/neon_action_button.dart';
 import '../widgets/terms_checkbox.dart';
 import '../widgets/welcome_badge.dart';
 import '../../../core/theme/auth_colors.dart';
-import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback? onLoginSuccess;

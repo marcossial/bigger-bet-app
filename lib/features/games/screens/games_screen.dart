@@ -224,112 +224,112 @@ class GamesListSection extends StatelessWidget {
             style: TextStyle(color: AppColors.textGrey, fontSize: 14),
           ),
           const SizedBox(height: 20),
-          ...games.map((game) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, game['route'] as String);
-                },
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  height: 160,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: games.map((game) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, game['route'] as String);
+                    },
                     borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFF111111),
-                    border: Border.all(
-                        color: AppColors.neonGreen.withValues(alpha: 0.3)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      )
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.asset(
-                          game['image'] as String,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: const Color(0xFF1A1A1A),
-                              child: const Center(
-                                child: Icon(Icons.image_not_supported,
-                                    color: AppColors.textGrey, size: 50),
-                              ),
-                            );
-                          },
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withValues(alpha: 0.9),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
+                    child: Container(
+                      height: 200,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: const Color(0xFF111111),
+                        border: Border.all(
+                            color: AppColors.neonGreen.withValues(alpha: 0.3)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          )
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(
+                              game['image'] as String,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: const Color(0xFF1A1A1A),
+                                  child: const Center(
+                                    child: Icon(Icons.image_not_supported,
+                                        color: AppColors.textGrey, size: 30),
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 20,
-                          left: 20,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                game['title'] as String,
-                                style: const TextStyle(
-                                  color: AppColors.neonGreen,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w900,
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withValues(alpha: 0.9),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                game['subtitle'] as String,
-                                style: const TextStyle(
-                                  color: AppColors.textWhite,
-                                  fontSize: 12,
-                                ),
+                            ),
+                            Positioned(
+                              bottom: 12,
+                              left: 12,
+                              right: 12,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    game['title'] as String,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: AppColors.neonGreen,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.neonGreen,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'JOGAR',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                          bottom: 20,
-                          right: 20,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColors.neonGreen,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text(
-                              'JOGAR',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
