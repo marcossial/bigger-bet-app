@@ -50,6 +50,21 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _carregarSaldo();
+  }
+
+  void _carregarSaldo() async {
+    final saldo = await FinanceManager.getSaldo();
+    if (mounted) {
+      setState(() {
+        _saldo = saldo;
+      });
+    }
+  }
+
+  @override
   void dispose() {
     _apostaController.dispose();
     super.dispose();
@@ -107,6 +122,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
         }
       }
     });
+    FinanceManager.saveSaldo(_saldo);
   }
 
   /// Gerencia o clique em uma das 25 casas do tabuleiro
@@ -164,6 +180,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
       _mensagemAlgoritmo = '💰 Retirada efetuada com sucesso! Você levou R\$ ${_premioAcumulado.toStringAsFixed(2)} para casa (e comprou 2 segundos de paz de espírito).';
       _premioAcumulado = 0.00;
     });
+    FinanceManager.saveSaldo(_saldo);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -212,6 +229,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
       _saldo = resultado.novoSaldo;
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
+    FinanceManager.saveSaldo(_saldo);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(resultado.mensagemToast),
@@ -226,6 +244,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
       _saldo = resultado.novoSaldo;
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
+    FinanceManager.saveSaldo(_saldo);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(resultado.mensagemToast),
@@ -240,6 +259,7 @@ class _AtomicMinesScreenState extends State<AtomicMinesScreen> {
       _saldo = resultado.novoSaldo;
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
+    FinanceManager.saveSaldo(_saldo);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(resultado.mensagemToast),

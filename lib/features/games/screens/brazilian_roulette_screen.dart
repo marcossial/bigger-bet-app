@@ -73,6 +73,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
   @override
   void initState() {
     super.initState();
+    _carregarSaldo();
 
     // 1. Inicializa o controlador da animação durando 3.5 segundos
     _animationController = AnimationController(
@@ -100,6 +101,15 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
         _finalizarGiro();
       }
     });
+  }
+
+  void _carregarSaldo() async {
+    final saldo = await FinanceManager.getSaldo();
+    if (mounted) {
+      setState(() {
+        _saldo = saldo;
+      });
+    }
   }
 
   @override
@@ -164,6 +174,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
         }
       }
     });
+    FinanceManager.saveSaldo(_saldo);
 
     // ──────────────────────────────────────────────────────────────────────
     // CÁLCULO MATEMÁTICO DA PARADA (Didático)
@@ -217,6 +228,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
         _mensagemAlgoritmo = '💥 FALÊNCIA CONFIRMADA! Seu saldo foi a zero. Felizmente, nossos órgãos parceiros e agiotas estão prontos para ajudar!';
       }
     });
+    FinanceManager.saveSaldo(_saldo);
   }
 
   // ──────────────────────────────────────────────────────────────────────────
@@ -229,6 +241,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
       _saldo = resultado.novoSaldo;
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
+    FinanceManager.saveSaldo(_saldo);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(resultado.mensagemToast),
@@ -243,6 +256,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
       _saldo = resultado.novoSaldo;
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
+    FinanceManager.saveSaldo(_saldo);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(resultado.mensagemToast),
@@ -257,6 +271,7 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
       _saldo = resultado.novoSaldo;
       _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
+    FinanceManager.saveSaldo(_saldo);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(resultado.mensagemToast),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bigger_bet/core/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Modelo simples que encapsula o resultado de qualquer transação financeira sarcástica.
 /// Ele armazena o novo saldo, a frase que a IA (algoritmo) deve dizer e os dados do SnackBar.
@@ -22,6 +23,32 @@ class FinanceResult {
 /// Ele evita a duplicação de lógica (cálculos matemáticos de dinheiro) e de strings de texto
 /// satíricos em múltiplas telas de jogos.
 class FinanceManager {
+  static const String _saldoKey = 'user_balance';
+  static const double _saldoInicial = 1000.00;
+
+  /// Retorna o saldo atual do usuário persistido localmente
+  static Future<double> getSaldo() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble(_saldoKey) ?? _saldoInicial;
+  }
+
+  /// Salva o novo saldo do usuário
+  static Future<void> saveSaldo(double novoSaldo) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(_saldoKey, novoSaldo);
+  }
+
+  /// Verifica se um bem já foi vendido
+  static Future<bool> isBemVendido(String idBem) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('bem_vendido_$idBem') ?? false;
+  }
+
+  /// Marca um bem como vendido
+  static Future<void> setBemVendido(String idBem) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('bem_vendido_$idBem', true);
+  }
   
   /// Realiza a venda expressa do Rim do usuário
   static FinanceResult venderRim(double saldoAtual) {

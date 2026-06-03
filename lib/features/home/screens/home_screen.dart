@@ -1,13 +1,74 @@
 import 'package:bigger_bet/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/custom_bottom_nav_bar.dart';
+import '../../games/utils/finance_manager.dart';
 
-class BiggerBetHome extends StatelessWidget {
+class BiggerBetHome extends StatefulWidget {
   const BiggerBetHome({super.key});
 
   @override
+  State<BiggerBetHome> createState() => _BiggerBetHomeState();
+}
+
+class _BiggerBetHomeState extends State<BiggerBetHome> {
+  double _saldo = 1000.00;
+  Set<String> _bensVendidos = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarDados();
+  }
+
+  void _carregarDados() async {
+    final saldo = await FinanceManager.getSaldo();
+    final casaVendida = await FinanceManager.isBemVendido('casa');
+    final carroVendido = await FinanceManager.isBemVendido('carro');
+    final telefoneVendido = await FinanceManager.isBemVendido('telefone');
+    
+    Set<String> vendidos = {};
+    if (casaVendida) vendidos.add('casa');
+    if (carroVendido) vendidos.add('carro');
+    if (telefoneVendido) vendidos.add('telefone');
+
+    if (mounted) {
+      setState(() {
+        _saldo = saldo;
+        _bensVendidos = vendidos;
+      });
+    }
+  }
+
+  void _venderBem(double valor, String idBem, String mensagem) async {
+    setState(() {
+      _saldo += valor;
+      _bensVendidos.add(idBem);
+    });
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            mensagem, 
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)
+          ),
+          backgroundColor: AppColors.neonGreenDark,
+          duration: const Duration(seconds: 4),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(bottom: 90, left: 20, right: 20),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+    }
+
+    await FinanceManager.saveSaldo(_saldo);
+    await FinanceManager.setBemVendido(idBem);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         bottom: false,
@@ -15,23 +76,26 @@ class BiggerBetHome extends StatelessWidget {
           children: [
             // Corpo da página rolável
             SingleChildScrollView(
-              padding: EdgeInsets.only(bottom: 100),
+              padding: const EdgeInsets.only(bottom: 100),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  HomeHeader(),
-                  SizedBox(height: 30),
-                  BalanceSection(),
-                  SizedBox(height: 40),
-                  StatsSection(),
-                  SizedBox(height: 30),
-                  AssetsSection(),
+                  const HomeHeader(),
+                  const SizedBox(height: 30),
+                  BalanceSection(saldo: _saldo),
+                  const SizedBox(height: 40),
+                  const StatsSection(),
+                  const SizedBox(height: 30),
+                  AssetsSection(
+                    onVenderBem: _venderBem,
+                    bensVendidos: _bensVendidos,
+                  ),
                 ],
               ),
             ),
 
             // Bottom Navigation Bar Customizada
-            Positioned(
+            const Positioned(
               bottom: 0,
               left: 0,
               right: 0,
@@ -111,7 +175,9 @@ class HomeHeader extends StatelessWidget {
 }
 
 class BalanceSection extends StatelessWidget {
-  const BalanceSection({super.key});
+  final double saldo;
+
+  const BalanceSection({super.key, required this.saldo});
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +195,7 @@ class BalanceSection extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            'R\$ 0,42',
+            'R\$ ${saldo.toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 56,
               fontWeight: FontWeight.w900,
@@ -418,19 +484,24 @@ class StatsSection extends StatelessWidget {
 }
 
 class AssetsSection extends StatelessWidget {
-  const AssetsSection({super.key});
+  final void Function(double valor, String idBem, String mensagem) onVenderBem;
+  final Set<String> bensVendidos;
+
+  const AssetsSection({super.key, required this.onVenderBem, required this.bensVendidos});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+    int itensRestantes = 3 - bensVendidos.length;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              const Row(
                 children: [
                   Icon(Icons.inventory_2_outlined,
                       color: AppColors.buttonBlue, size: 20),
@@ -446,25 +517,37 @@ class AssetsSection extends StatelessWidget {
                 ],
               ),
               Text(
-                '3 ITENS RESTANTES',
-                style: TextStyle(
+                '$itensRestantes ITEN${itensRestantes == 1 ? '' : 'S'} RESTANTE${itensRestantes == 1 ? '' : 'S'}',
+                style: const TextStyle(
                     color: AppColors.textGrey,
                     fontSize: 10,
                     fontWeight: FontWeight.bold),
               )
             ],
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           AssetItemCard(
             icon: Icons.home_outlined,
             title: 'Uma Casa Inteira',
             subtitle: 'Valor: R\$ 450.000',
+            isSold: bensVendidos.contains('casa'),
+            onSell: () => onVenderBem(450000.00, 'casa', 'Ótima escolha vender sua casa, você nem precisava dela mesmo!'),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           AssetItemCard(
             icon: Icons.directions_car_outlined,
             title: 'Carro do Ano',
             subtitle: 'Valor: R\$ 120.000',
+            isSold: bensVendidos.contains('carro'),
+            onSell: () => onVenderBem(120000.00, 'carro', 'Carro vendido com sucesso! Pelo menos você não precisa mais pagar o IPVA.'),
+          ),
+          const SizedBox(height: 15),
+          AssetItemCard(
+            icon: Icons.smartphone_outlined,
+            title: 'Telefone Celular',
+            subtitle: 'Valor: R\$ 4.500',
+            isSold: bensVendidos.contains('telefone'),
+            onSell: () => onVenderBem(4500.00, 'telefone', 'Parabéns por vender seu telefone, agora você tem o saldo necessário para jogar mais. Mas... como você vai jogar sem ele, né?'),
           ),
         ],
       ),
@@ -476,12 +559,16 @@ class AssetItemCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final VoidCallback onSell;
+  final bool isSold;
 
   const AssetItemCard({
     super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
+    required this.onSell,
+    required this.isSold,
   });
 
   @override
@@ -504,10 +591,11 @@ class AssetItemCard extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  color: AppColors.textWhite,
+                style: TextStyle(
+                  color: isSold ? AppColors.textGrey : AppColors.textWhite,
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
+                  decoration: isSold ? TextDecoration.lineThrough : null,
                 ),
               ),
               const SizedBox(height: 4),
@@ -522,19 +610,35 @@ class AssetItemCard extends StatelessWidget {
           ),
         ),
         OutlinedButton(
-          onPressed: () {},
+          onPressed: () {
+            if (isSold) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Você já vendeu isso! Não tem como vender duas vezes.', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  backgroundColor: AppColors.neonPink,
+                  duration: const Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                  margin: const EdgeInsets.only(bottom: 90, left: 20, right: 20),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              );
+            } else {
+              onSell();
+            }
+          },
           style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.neonGreen,
-            side: const BorderSide(color: AppColors.neonGreen, width: 1),
+            foregroundColor: isSold ? AppColors.textGrey : AppColors.neonGreen,
+            side: BorderSide(color: isSold ? AppColors.textGrey.withValues(alpha: 0.5) : AppColors.neonGreen, width: 1),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           ),
           child: Text(
-            'VENDER',
+            isSold ? 'VENDIDO' : 'VENDER',
             style:
-                TextStyle(fontSize: 12, fontWeight: FontWeight.bold, shadows: [
+                TextStyle(fontSize: 12, fontWeight: FontWeight.bold, shadows: isSold ? [] : [
               Shadow(color: AppColors.neonGreen.withValues(alpha: 0.5), blurRadius: 5)
             ]),
           ),
