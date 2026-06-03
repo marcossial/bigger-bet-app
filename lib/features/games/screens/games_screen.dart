@@ -180,7 +180,7 @@ class GamesHeroCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Image.asset(
-              'assets/images/alien_avatar.png',
+              'assets/images/trio_alien.png',
               height: 120,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) =>
@@ -295,20 +295,17 @@ class GamesListSection extends StatelessWidget {
             children: [
               _GameCircleIcon(
                 title: 'BRAZILIAN\nROULETTE',
-                icon: Icons.track_changes,
-                iconColor: AppColors.buttonBlue,
+                imagePath: 'assets/images/brazilian_roulette.png',
                 route: '/games/brazilian_roulette',
               ),
               _GameCircleIcon(
                 title: 'ATOMIC\nMINES',
-                icon: Icons.flare,
-                iconColor: AppColors.neonGreen,
+                imagePath: 'assets/images/atomic_mines.png',
                 route: '/games/atomic_mines',
               ),
               _GameCircleIcon(
                 title: 'MONEY\nABDUCTOR',
-                icon: Icons.rocket_launch,
-                iconColor: AppColors.buttonBlue,
+                imagePath: 'assets/images/money_abductor.png',
                 route: '/games/money_abductor',
               ),
             ],
@@ -321,14 +318,12 @@ class GamesListSection extends StatelessWidget {
 
 class _GameCircleIcon extends StatelessWidget {
   final String title;
-  final IconData icon;
-  final Color iconColor;
+  final String imagePath;
   final String route;
 
   const _GameCircleIcon({
     required this.title,
-    required this.icon,
-    required this.iconColor,
+    required this.imagePath,
     required this.route,
   });
 
@@ -347,7 +342,16 @@ class _GameCircleIcon extends StatelessWidget {
               border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
             ),
             child: Center(
-              child: Icon(icon, color: iconColor, size: 32),
+              child: Image.asset(
+                imagePath,
+                width: 44,
+                height: 44,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                    Icons.error,
+                    color: AppColors.neonGreen,
+                    size: 32),
+              ),
             ),
           ),
           const SizedBox(height: 12),
