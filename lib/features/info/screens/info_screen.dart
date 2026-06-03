@@ -1,69 +1,76 @@
 import 'package:bigger_bet/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/custom_bottom_nav_bar.dart';
 
 class InfoScreen extends StatelessWidget {
   const InfoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const InfoHeader(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 32),
-                    const Text(
-                      'BASTIDORES',
-                      style: TextStyle(
-                        color: AppColors.neonGreen,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    const StylizedTitle(),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Não somos apenas mais um site sobre odds e jackpots; somos o seu guia para decifrar os mistérios por trás dos algoritmos sedutores e das propagandas exageradas desse conteúdo hipnotizante.',
-                      style: TextStyle(
-                        color: AppColors.textSubtitle,
-                        fontSize: 15,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: TextButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.keyboard_double_arrow_down,
-                            color: AppColors.neonBlue, size: 20),
-                        label: const Text(
-                          'ENTENDA MELHOR',
+        bottom: false,
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: 110),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InfoHeader(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 32),
+                        Text(
+                          'BASTIDORES',
                           style: TextStyle(
-                            color: AppColors.neonBlue,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 1,
+                            color: AppColors.neonGreen,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
                           ),
                         ),
-                      ),
+                        StylizedTitle(),
+                        SizedBox(height: 16),
+                        Text(
+                          'Não somos apenas mais um site sobre odds e jackpots; somos o seu guia para decifrar os mistérios por trás dos algoritmos sedutores e das propagandas exageradas desse conteúdo hipnotizante.',
+                          style: TextStyle(
+                            color: AppColors.textSubtitle,
+                            fontSize: 15,
+                            height: 1.5,
+                          ),
+                        ),
+                        SizedBox(height: 32),
+                        Center(
+                          child: Icon(
+                            Icons.keyboard_double_arrow_down,
+                            color: AppColors.neonBlue,
+                            size: 20,
+                          ),
+                        ),
+                        SizedBox(height: 40),
+                        MysteryCard(),
+                        SizedBox(height: 40),
+                        TricksSection(),
+                        SizedBox(height: 40),
+                      ],
                     ),
-                    const SizedBox(height: 40),
-                    const MysteryCard(),
-                    const SizedBox(height: 40),
-                  ],
-                ),
+                  ),
+                  SupportSection(),
+                ],
               ),
-              const SupportSection(),
-            ],
-          ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: CustomBottomNavBar(activeItem: NavBarItem.info),
+            ),
+          ],
         ),
       ),
     );
@@ -103,7 +110,12 @@ class InfoHeader extends StatelessWidget {
               ),
             ],
           ),
-          const Icon(Icons.face, color: AppColors.textGrey, size: 20),
+          IconButton(
+            icon: const Icon(Icons.close, color: AppColors.textGrey, size: 24),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+          ),
         ],
       ),
     );
@@ -253,6 +265,131 @@ class SmallInfoCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class TricksSection extends StatelessWidget {
+  const TricksSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'ARMADILHAS PSICOLÓGICAS',
+          style: TextStyle(
+            color: AppColors.neonPink,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
+          ),
+        ),
+        SizedBox(height: 8),
+        Text(
+          'Como os Cassinos Te Viciam',
+          style: TextStyle(
+            color: AppColors.textWhite,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 16),
+        Text(
+          'Abaixo estão os três truques comportamentais mais usados pelas casas de apostas para fazer você continuar jogando mesmo perdendo tudo:',
+          style: TextStyle(
+            color: AppColors.textSubtitle,
+            fontSize: 15,
+            height: 1.5,
+          ),
+        ),
+        SizedBox(height: 24),
+        _TrickCard(
+          icon: Icons.track_changes,
+          title: 'Efeito Quase-Vitória (Near Miss)',
+          description: 'A roleta quase para no prêmio, ou o balão decola quase no multiplicador alto. Isso faz seu cérebro liberar dopamina e achar que a vitória está muito próxima, forçando você a girar mais uma vez.',
+          iconColor: AppColors.neonGreen,
+        ),
+        SizedBox(height: 16),
+        _TrickCard(
+          icon: Icons.trending_down,
+          title: 'Perseguição de Perdas (Loss Chasing)',
+          description: 'A crença irracional de que a "sorte vai mudar" e que a próxima aposta vai recuperar tudo o que foi perdido. É nesse momento que a maioria dos jogadores entra em falência total.',
+          iconColor: AppColors.neonPink,
+        ),
+        SizedBox(height: 16),
+        _TrickCard(
+          icon: Icons.gamepad_outlined,
+          title: 'Ilusão de Controle',
+          description: 'Ao deixar você escolher a cor na roleta, as minas no campo ou a hora de retirar a aposta no crash, o jogo cria a ilusão de que você tem alguma habilidade envolvida. Na realidade, a banca controla 100% da probabilidade matemática.',
+          iconColor: AppColors.neonBlue,
+        ),
+      ],
+    );
+  }
+}
+
+class _TrickCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  final Color iconColor;
+
+  const _TrickCard({
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.03)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(icon, color: iconColor, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: AppColors.textWhite,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: AppColors.textGrey,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
