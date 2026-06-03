@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
+import 'package:bigger_bet/features/games/utils/finance_manager.dart';
 
 /// TELA DO JOGO: ROleta Sarcástica e Educativa ("Brazilian Roulette")
 /// 
@@ -223,40 +224,43 @@ class _BrazilianRouletteScreenState extends State<BrazilianRouletteScreen>
   // ──────────────────────────────────────────────────────────────────────────
 
   void _venderRim() {
+    final resultado = FinanceManager.venderRim(_saldo);
     setState(() {
-      _saldo += 5000.00;
-      _mensagemAlgoritmo = '⚕️ Cirurgia rápida concluída! Seu rim foi vendido por R\$ 5.000,00. Quem precisa de dois filtros biológicos afinal? Volte a apostar!';
+      _saldo = resultado.novoSaldo;
+      _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Operação bem-sucedida: +R\$ 5.000,00 (Rim removido)'),
-        backgroundColor: AppColors.neonGreenDark,
+      SnackBar(
+        content: Text(resultado.mensagemToast),
+        backgroundColor: resultado.corToast,
       ),
     );
   }
 
   void _pegarAgiota() {
+    final resultado = FinanceManager.pegarEmprestimoAgiota(_saldo);
     setState(() {
-      _saldo += 10000.00;
-      _mensagemAlgoritmo = '💸 R\$ 10.000,00 recebidos! O agiota parceiro aprovou o seu crédito com juros amigáveis de 450% ao dia. Ignore as ameaças e ganhe tudo de volta!';
+      _saldo = resultado.novoSaldo;
+      _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Empréstimo concedido: +R\$ 10.000,00 (Juros de 450% a.d.)'),
-        backgroundColor: AppColors.neonPink,
+      SnackBar(
+        content: Text(resultado.mensagemToast),
+        backgroundColor: resultado.corToast,
       ),
     );
   }
 
   void _venderPatrimonio() {
+    final resultado = FinanceManager.liquidarBens(_saldo);
     setState(() {
-      _saldo += 250000.00;
-      _mensagemAlgoritmo = '🏠 Imóveis liquidados! Você vendeu sua casa e seu carro por R\$ 250.000,00. Agora sim você tem o saldo necessário para vencer o algoritmo! Confia!';
+      _saldo = resultado.novoSaldo;
+      _mensagemAlgoritmo = resultado.mensagemAlgoritmo;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Bens liquidados: +R\$ 250.000,00 na conta!'),
-        backgroundColor: AppColors.buttonBlue,
+      SnackBar(
+        content: Text(resultado.mensagemToast),
+        backgroundColor: resultado.corToast,
       ),
     );
   }

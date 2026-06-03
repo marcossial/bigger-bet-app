@@ -190,6 +190,62 @@ class BalanceSection extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () => _mostrarPopUpSaque(context),
+            icon: const Icon(Icons.monetization_on_outlined, color: Colors.black, size: 16),
+            label: const Text(
+              'SACAR SALDO (PIX)',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.neonGreen,
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _mostrarPopUpSaque(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1A1A1A),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: AppColors.neonPink),
+            SizedBox(width: 8),
+            Text(
+              'SAQUE INDISPONÍVEL',
+              style: TextStyle(color: AppColors.neonPink, fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ],
+        ),
+        content: const Text(
+          'Estamos enfrentando instabilidade técnica nos saques via PIX devido ao alto volume de transferências de bônus para a diretoria. Que tal continuar apostando para dobrar seu saldo enquanto nosso servidor de pagamentos está "temporariamente" fora do ar? Confia!',
+          style: TextStyle(color: AppColors.textWhite, height: 1.4),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('TENTAR DE NOVO', style: TextStyle(color: AppColors.textGrey)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.neonGreen,
+              foregroundColor: Colors.black,
+            ),
+            child: const Text('CONTINUAR APOSTANDO', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
         ],
       ),
     );
