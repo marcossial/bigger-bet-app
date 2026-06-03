@@ -92,6 +92,8 @@ class _OnboardingPage extends StatelessWidget {
             width: double.infinity,
             margin: const EdgeInsets.only(top: 8),
             decoration: BoxDecoration(
+              // Fundo sólido adicionado aqui para bloquear o vazamento da sombra
+              color: AppColors.background,
               borderRadius: BorderRadius.circular(24),
               border: const Border(
                 top: BorderSide(
@@ -110,28 +112,47 @@ class _OnboardingPage extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(24),
-              child: Image.asset(
-                data.imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color(0xFF2D1B69),
-                        Color(0xFF2D1B69),
-                        Color(0xF2FF6B35),
-                        Color(0x1AFF6B35),
-                      ],
-                      stops: [0.0, 0.33, 0.66, 1.0],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
+              child: ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white, // O topo fica 100% visível
+                      Colors.white, // Continua visível pelo corpo da imagem
+                      Colors.transparent, // Fica transparente no finalzinho
+                    ],
+                    stops: [
+                      0.0,
+                      0.85,
+                      1.0
+                    ], // O fade ocorre apenas nos últimos 15%
+                  ).createShader(bounds);
+                },
+                blendMode: BlendMode.dstIn,
+                child: Image.asset(
+                  data.imagePath,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFF2D1B69),
+                          Color(0xFF2D1B69),
+                          Color(0xF2FF6B35),
+                          Color(0x1AFF6B35),
+                        ],
+                        stops: [0.0, 0.33, 0.66, 1.0],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
                     ),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.image_outlined,
-                      color: Colors.white38,
-                      size: 64,
+                    child: const Center(
+                      child: Icon(
+                        Icons.image_outlined,
+                        color: Colors.white38,
+                        size: 64,
+                      ),
                     ),
                   ),
                 ),

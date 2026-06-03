@@ -5,7 +5,6 @@ import '../widgets/neon_action_button.dart';
 import '../widgets/terms_checkbox.dart';
 import '../widgets/welcome_badge.dart';
 import '../../../core/theme/auth_colors.dart';
-import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback? onLoginSuccess;
@@ -44,16 +43,14 @@ class _LoginScreenState extends State<LoginScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: const Color(0xFF1A1D2E),
+        backgroundColor: AuthColors.fieldBg,
         behavior: SnackBarBehavior.floating,
       ),
     );
   }
 
   void _goToRegister() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const RegisterScreen()),
-    );
+    Navigator.pushNamed(context, '/register');
   }
 
   @override
